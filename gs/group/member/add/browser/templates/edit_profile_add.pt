@@ -30,8 +30,8 @@
         tal:attributes="action request/URL" id="edit-profile">
         <h1 tal:content="view/label">Edit Profile</h1>
         <p>
-          To add a new member to the group, enter the user's details
-          below and click the 
+          To add a new member to the group without requiring the user to verify,
+          enter the user's details below and click the 
           <samp class="button"
             tal:define="action python:[a for a in view.actions][0].label"
             tal:content="action">Big R</samp>
@@ -40,6 +40,14 @@
           email letting them know they have been joined to
           <span class="group" 
             tal:content="python:view.groupInfo.name">this group</span>.
+        </p>
+        <p>
+          <b>Please note:</b> This should only be used when you have absolute certainty that the person
+          wishes to be a member of the group, and you are certain of their details. If
+          you are not, please use the <a href="admin_join.html">Invite a New Group Member</a>
+          form instead.
+        </p>
+        <p>
           You must fill out all required fields, which are marked 
             <span class="required"><label style="display:inline;margin:0px;">like
               this</label></span>.
@@ -54,7 +62,7 @@
             right away: you can set the delivery settings to a daily
             digest of topics or Web-only.
           </p>
-          <tal:block define="widgets python:[view.adminWidgets[4]]">
+          <tal:block define="widgets python:view.adminWidgets">
             <tal:block
               replace="structure provider:groupserver.FormWidgets"/>
           </tal:block>
@@ -66,11 +74,22 @@
               tal:content="python:view.siteInfo.name">this site</span>.
             You must fill out all required fields, but you can ignore 
             the other fields.</p>
-          <tal:block define="widgets view/profileWidgets">
+          <tal:block define="widgets python:[view.profileWidgets[0]]">
+            <tal:block
+              replace="structure provider:groupserver.FormWidgets"/>
+          </tal:block>          
+        </div><!--standardProfileFields-->
+        <div id="advancedProfileFields" class="disclosureWidget">
+          <p>
+            <a class="disclosureButton" href="javascript:showHideDisclosure('advancedProfileFields')">You may optionally enter other parts of the new member's profile</a>
+          </p>
+          <div class="disclosureShowHide" style="display: none;">
+            
+          <tal:block define="widgets python:view.profileWidgets[1:]">
             <tal:block
               replace="structure provider:groupserver.FormWidgets"/>
           </tal:block>
-        </div><!--standardProfileFields-->
+        </div><!--advancedProfileFields-->
         <div class="buttons" tal:condition="view/availableActions">
           <tal:block repeat="action view/actions">
             <div class="formelementbutton">
@@ -93,33 +112,8 @@
         src="/++resource++popup_help-20071218.js">&#160;</script>
       <script type="text/javascript">
         jQuery.noConflict()
-        
-        var popupPreview = function (event) {
-            var baseUri = 'admin_invitation_message_preview.html';
-            var uri = null;
-            var messageBody = null;
-            var toAddr = null
-            var fromAddr = null;
-            var subject = null;
-            var specs = 'height=360,width=730,menubar=no,status=no,tolbar=no';
-            
-            messageBody = jQuery('#form\\.message').val();
-            messageBody = messageBody.replace(/\ /g, '%20');
-            messageBody = messageBody.replace(/\n/g, '%0A');
-            uri = baseUri + '?form.body=' + messageBody;
-            fromAddr = jQuery('#form\\.fromAddr').val();
-            uri = uri + '&form.fromAddr=' + fromAddr;
-            toAddr = jQuery('#form\\.toAddr').val();
-            uri = uri + '&form.toAddr=' + toAddr;
-            subject = jQuery('#form\\.subject').val();
-            uri = uri + '&form.subject=' + subject.replace(/ /g, '%20');
-            
-            window.open(uri, 'Message Preview', specs)
-        }
-        
         jQuery(document).ready( function () {
             GSPopupFormHelp.init('#edit-profile');
-            jQuery('#preview').click(popupPreview);
             jQuery('#form\\.toAddr').focus();
         });
       </script>

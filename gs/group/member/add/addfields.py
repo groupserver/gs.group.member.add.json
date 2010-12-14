@@ -22,7 +22,7 @@ class AddFields(object):
     @property
     def adminInterface(self):
         if self.__adminInterface == None:
-            adminInterfaceName = '%sAdminDelivery' % \
+            adminInterfaceName = '%sAdminBasic' % \
                                     self.profileInterfaceName
             assert hasattr(interfaces, adminInterfaceName), \
                 'Interface "%s" not found.' % adminInterfaceName
@@ -53,7 +53,7 @@ class AddFields(object):
         if self.__adminWidgets == None:
             assert widgets
             sfIds = self.profileFieldIds
-            adminWidgetIds = ['delivery']
+            adminWidgetIds = ['toAddr','delivery']
             self.__adminWidgets = [widgets[w] for w in adminWidgetIds]
         assert self.__adminWidgets
         return self.__adminWidgets

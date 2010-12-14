@@ -5,7 +5,7 @@ from version import get_version
 
 version = get_version()
 
-setup(name='gs.group.member.invite',
+setup(name='gs.group.member.add',
     version=version,
     description="The pages that are required to add people to "\
       "GroupServer groups, without an invitation",

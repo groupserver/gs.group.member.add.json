@@ -14,16 +14,17 @@ from Products.GSGroup.groupInfo import groupInfo_to_anchor
 from Products.GSGroupMember.groupmembership import user_member_of_group
 from Products.GSProfile.edit_profile import select_widget, wym_editor_widget
 from Products.GSProfile.utils import create_user_from_email, \
-    enforce_schema
+    enforce_schema, verificationId_from_email
 from Products.GSProfile.emailaddress import NewEmailAddress, \
     EmailAddressExists
 from gs.content.form.radio import radio_widget
 from gs.group.member.invite.utils import set_digest
-from audit import Auditor, INVITE_NEW_USER, INVITE_OLD_USER, INVITE_EXISTING_MEMBER
+from audit import Auditor, ADD_NEW_USER, ADD_OLD_USER, ADD_EXISTING_MEMBER
 from addfields import AddFields
+from gs.group.member.join.interfaces import IGSJoiningUser
 
 class AddEditProfileForm(PageForm):
-    label = u'Add a New Group Member'
+    label = u'Add a New Group Member, Without Verification'
     pageTemplateFileName = 'browser/templates/edit_profile_add.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
@@ -52,7 +53,9 @@ class AddEditProfileForm(PageForm):
         retval = self.adminInfo.user.get_preferredEmailAddresses()[0]
         return retval
         
-    def setUpWidgets(self, ignore_request=False):
+    def setUpWidgets(self, ignore_request=False):        
+        data = {}
+
         siteTz = self.siteInfo.get_property('tz', 'UTC')
         defaultTz = self.groupInfo.get_property('tz', siteTz)
         data['tz'] = defaultTz
@@ -62,7 +65,7 @@ class AddEditProfileForm(PageForm):
             self.request, form=self, data=data,
             ignore_request=ignore_request)
         
-    @form.action(label=u'Add', failure='handle_add_action_failure')
+    @form.action(label=u'Add Without Verification', failure='handle_add_action_failure')
     def handle_add(self, action, data):
         self.actual_handle_add(action, data)
         
@@ -105,46 +108,53 @@ class AddEditProfileForm(PageForm):
         emailChecker.context = self.context
         e = u'<code class="email">%s</code>' % toAddr
         g = groupInfo_to_anchor(self.groupInfo)
-        
         try:
             emailChecker.validate(toAddr)
         except EmailAddressExists, errorVal:
             user = acl_users.get_userByEmail(toAddr)
             assert user, 'User for address <%s> not found' % toAddr
-            userInfo = IGSUserInfo(user)
+            # get the user object in the context of the group and site
+            userInfo = createObject('groupserver.UserFromId',
+                                  self.groupInfo.groupObj,
+                                  user.getId())
+            auditor = self.get_auditor(userInfo)
             u = userInfo_to_anchor(userInfo)
-            auditor, inviter = self.get_auditor_inviter(userInfo)
             if user_member_of_group(user, self.groupInfo):
-                auditor.info(INVITE_EXISTING_MEMBER, toAddr)
+                auditor.info(ADD_EXISTING_MEMBER, toAddr)
                 self.status=u'''<li>The person with the email address %s 
 &#8213; %s &#8213; is already a member of %s.</li>'''% (e, u, g)
                 self.status = u'%s<li>No changes to the profile of '\
                   '%s have been made.</li>' % (self.status, u)
             else:
-                self.status=u'<li>Inviting the existing person with '\
-                  u'the email address %s &#8213; %s &#8213; to join '\
+                self.status=u'<li>Adding the existing person with '\
+                  u'the email address %s &#8213; %s &#8213; to '\
                   u'%s.</li>'% (e, u, g)
-                inviteId = inviter.create_invitation(data, False)
-                auditor.info(INVITE_OLD_USER, toAddr)
-                inviter.send_notification(data['subject'], 
-                    data['message'], inviteId, data['fromAddr'])
+                auditor.info(ADD_OLD_USER, toAddr)
+                joininguser = IGSJoiningUser(userInfo)
+                joininguser.join(self.groupInfo)
                 self.set_delivery(userInfo, data['delivery'])
         else:
             # Email address does not exist, but it is a legitimate address
             user = create_user_from_email(self.context, toAddr)
-            userInfo = IGSUserInfo(user)
+            verificationId = verificationId_from_email(toAddr)
+            user.add_emailAddressVerification(verificationId, toAddr)
+            # force verify
+            user.verify_emailAddress(verificationId)
+            # get the user object in the context of the group and site
+            userInfo = createObject('groupserver.UserFromId',
+                                  self.groupInfo.groupObj,
+                                  user.id)
             self.add_profile_attributes(userInfo, data)
-            auditor, inviter = self.get_auditor_inviter(userInfo)
-            inviteId = inviter.create_invitation(data, True)
-            auditor.info(INVITE_NEW_USER, toAddr)
-            inviter.send_notification(data['subject'], data['message'], 
-                inviteId, data['fromAddr'], data['toAddr'])
+            auditor = self.get_auditor(userInfo)
+            auditor.info(ADD_NEW_USER, toAddr)
+            joininguser = IGSJoiningUser(userInfo)
+            joininguser.join(self.groupInfo)    
             self.set_delivery(userInfo, data['delivery'])
             u = userInfo_to_anchor(userInfo)
             self.status = u'''<li>A profile for %s has been created, and
 given the email address %s.</li>\n''' % (u, e)
-            self.status = u'%s<li>%s has been sent an invitation to '\
-              u'join %s.</li>\n' % (self.status, u, g)
+            self.status = u'%s<li>%s has been joined to '\
+              u'%s.</li>\n' % (self.status, u, g)
         assert user, 'User not created or found'
         assert self.status
         return userInfo
@@ -164,14 +174,13 @@ given the email address %s.</li>\n''' % (u, e)
         changed = form.applyChanges(userInfo.user, fields, data)
         set_digest(userInfo, self.groupInfo, data)
 
-    def get_auditor_inviter(self, userInfo):
+    def get_auditor(self, userInfo):
         ctx = get_the_actual_instance_from_zope(self.context)
-        inviter = Inviter(ctx, self.request, userInfo, 
-                            self.adminInfo, self.siteInfo, 
-                            self.groupInfo)
+        
         auditor = Auditor(self.siteInfo, self.groupInfo, 
                     self.adminInfo, userInfo)
-        return (auditor, inviter)
+        
+        return auditor
 
     def set_delivery(self, userInfo, delivery):
         if delivery == 'email':

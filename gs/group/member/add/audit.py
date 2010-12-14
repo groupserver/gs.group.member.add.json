@@ -9,41 +9,37 @@ from Products.GSGroup.groupInfo import groupInfo_to_anchor
 from Products.GSAuditTrail import IAuditEvent, BasicAuditEvent, \
   AuditQuery, event_id_from_data
 
-SUBSYSTEM = 'gs.group.member.invite'
+SUBSYSTEM = 'gs.group.member.add'
 import logging
 log = logging.getLogger(SUBSYSTEM) #@UndefinedVariable
 
-UNKNOWN                 = '0'
-INVITE_NEW_USER         = '1'
-INVITE_OLD_USER         = '2'
-INVITE_EXISTING_MEMBER  = '3'
-WITHDRAW_INVITATION     = '4'
+UNKNOWN              = '0'
+ADD_NEW_USER         = '1'
+ADD_OLD_USER         = '2'
+ADD_EXISTING_MEMBER  = '3'
 
 class AuditEventFactory(object):
     implements(IFactory)
 
-    title=u'User Profile Invitation Audit-Event Factory'
-    description=u'Creates a GroupServer audit event for invitations'
+    title=u'User Profile Add Audit-Event Factory'
+    description=u'Creates a GroupServer audit event for user add'
 
     def __call__(self, context, event_id,  code, date,
         userInfo, instanceUserInfo,  siteInfo,  groupInfo,
         instanceDatum='', supplementaryDatum='', subsystem=''):
 
-        if (code == INVITE_NEW_USER):
-            event = InviteNewUserEvent(context, event_id, date, 
+        if (code == ADD_NEW_USER):
+            event = AddNewUserEvent(context, event_id, date, 
               userInfo, instanceUserInfo, siteInfo, groupInfo,
               instanceDatum, supplementaryDatum)
-        elif (code == INVITE_OLD_USER):
-            event = InviteOldUserEvent(context, event_id, date, 
+        elif (code == ADD_OLD_USER):
+            event = AddOldUserEvent(context, event_id, date, 
               userInfo, instanceUserInfo, siteInfo, groupInfo,
               instanceDatum, supplementaryDatum)
-        elif (code == INVITE_EXISTING_MEMBER):
-            event = InviteExistingMemberEvent(context, event_id, date, 
+        elif (code == ADD_EXISTING_MEMBER):
+            event = AddExistingMemberEvent(context, event_id, date, 
               userInfo, instanceUserInfo, siteInfo, groupInfo,
               instanceDatum, supplementaryDatum)
-        elif (code == WITHDRAW_INVITATION):
-            event = WithdrawInvitationEvent(context, event_id, date, 
-              userInfo, instanceUserInfo, siteInfo, groupInfo)
         else:
             event = BasicAuditEvent(context, event_id, UNKNOWN, date, 
               userInfo, instanceUserInfo, siteInfo, groupInfo, 
@@ -54,8 +50,8 @@ class AuditEventFactory(object):
     def getInterfaces(self):
         return implementedBy(BasicAuditEvent)
 
-class InviteNewUserEvent(BasicAuditEvent):
-    """Administrator inviting a New User Event. 
+class AddNewUserEvent(BasicAuditEvent):
+    """Administrator adding a New User Event. 
     
     The "instanceDatum" is the address used to create the new user.
     """
@@ -65,12 +61,12 @@ class InviteNewUserEvent(BasicAuditEvent):
         siteInfo, groupInfo, instanceDatum,  supplementaryDatum):
         
         BasicAuditEvent.__init__(self, context, id, 
-          INVITE_NEW_USER, d, userInfo, instanceUserInfo, 
+          ADD_NEW_USER, d, userInfo, instanceUserInfo, 
           siteInfo, groupInfo,  instanceDatum, supplementaryDatum, 
           SUBSYSTEM)
     
     def __str__(self):
-        retval = u'Administrator %s (%s) inviting a new user %s (%s) '\
+        retval = u'Administrator %s (%s) adding a new user %s (%s) '\
           u'with address <%s> to join %s (%s) on %s (%s)' %\
           (self.userInfo.name, self.userInfo.id,
           self.instanceUserInfo.name, self.instanceUserInfo.id,  
@@ -81,9 +77,9 @@ class InviteNewUserEvent(BasicAuditEvent):
 
     @property
     def xhtml(self):
-        cssClass = u'audit-event profile-invite-event-%s' % self.code
+        cssClass = u'audit-event profile-add-event-%s' % self.code
         email = u'<code class="email">%s</code>' % self.instanceDatum
-        retval = u'<span class="%s">Invited the new user %s (with the '\
+        retval = u'<span class="%s">Adding the new user %s (with the '\
             u'email address %s) to join %s.</span>' %\
             (cssClass, userInfo_to_anchor(self.instanceUserInfo),
             groupInfo_to_anchor(self.groupInfo))
@@ -93,8 +89,8 @@ class InviteNewUserEvent(BasicAuditEvent):
               (retval, userInfo_to_anchor(self.userInfo))
         return retval
 
-class InviteOldUserEvent(BasicAuditEvent):
-    """Administrator Inviting an old User Event. 
+class AddOldUserEvent(BasicAuditEvent):
+    """Administrator adding an old User Event. 
     
     The "instanceDatum" is the address used to match the old user.
     """
@@ -104,12 +100,12 @@ class InviteOldUserEvent(BasicAuditEvent):
         siteInfo, groupInfo, instanceDatum,  supplementaryDatum):
         
         BasicAuditEvent.__init__(self, context, id, 
-          INVITE_OLD_USER, d, userInfo, instanceUserInfo, 
+          ADD_OLD_USER, d, userInfo, instanceUserInfo, 
           siteInfo, groupInfo, instanceDatum, supplementaryDatum, 
           SUBSYSTEM)
     
     def __str__(self):
-        retval = u'Administrator %s (%s) inviting an existing user '\
+        retval = u'Administrator %s (%s) adding an existing user '\
           u'%s (%s) with address <%s> to join %s (%s) on %s (%s)' %\
           (self.userInfo.name, self.userInfo.id,
           self.instanceUserInfo.name, self.instanceUserInfo.id,  
@@ -120,9 +116,9 @@ class InviteOldUserEvent(BasicAuditEvent):
 
     @property
     def xhtml(self):
-        cssClass = u'audit-event profile-invite-event-%s' % self.code
+        cssClass = u'audit-event profile-add-event-%s' % self.code
         email = u'<code class="email">%s</code>' % self.instanceDatum
-        retval = u'<span class="%s">Invited the existing user %s to '\
+        retval = u'<span class="%s">Adding the existing user %s to '\
             u'join %s.</span>' %\
             (cssClass, userInfo_to_anchor(self.instanceUserInfo),
             groupInfo_to_anchor(self.groupInfo))
@@ -132,8 +128,8 @@ class InviteOldUserEvent(BasicAuditEvent):
               (retval, userInfo_to_anchor(self.userInfo))
         return retval
 
-class InviteExistingMemberEvent(BasicAuditEvent):
-    """Administrator Inviting an Existing Group Member. 
+class AddExistingMemberEvent(BasicAuditEvent):
+    """Administrator Adding an Existing Group Member. 
     
     The "instanceDatum" is the address used to match the existing group
     member.
@@ -144,12 +140,12 @@ class InviteExistingMemberEvent(BasicAuditEvent):
         siteInfo, groupInfo, instanceDatum,  supplementaryDatum):
         
         BasicAuditEvent.__init__(self, context, id, 
-          INVITE_OLD_USER, d, userInfo, instanceUserInfo, 
+          ADD_OLD_USER, d, userInfo, instanceUserInfo, 
           siteInfo, groupInfo, instanceDatum, supplementaryDatum, 
           SUBSYSTEM)
     
     def __str__(self):
-        retval = u'Administrator %s (%s) tried to invite an existing '\
+        retval = u'Administrator %s (%s) tried to add an existing '\
           u'group member %s (%s) with address <%s> to join %s (%s) '\
           u'on %s (%s)' %\
           (self.userInfo.name, self.userInfo.id,
@@ -161,49 +157,12 @@ class InviteExistingMemberEvent(BasicAuditEvent):
 
     @property
     def xhtml(self):
-        cssClass = u'audit-event profile-invite-event-%s' % self.code
+        cssClass = u'audit-event profile-add-event-%s' % self.code
         email = u'<code class="email">%s</code>' % self.instanceDatum
-        retval = u'<span class="%s">Tried to invite the existing member '\
+        retval = u'<span class="%s">Tried to add the existing member '\
             u' %s to join %s.</span>' %\
             (cssClass, userInfo_to_anchor(self.instanceUserInfo),
             groupInfo_to_anchor(self.groupInfo))
-        if ((self.instanceUserInfo.id != self.userInfo.id)
-            and not(self.userInfo.anonymous)):
-            retval = u'%s &#8212; %s' %\
-              (retval, userInfo_to_anchor(self.userInfo))
-        return retval
-
-class WithdrawInvitationEvent(BasicAuditEvent):
-    """Administrator Withdrawing an Invitation 
-
-        Invitations are withdrawn based on userID, so there is
-        no instanceDatum or supplementaryDatum required here.
-    """
-    implements(IAuditEvent)
-
-    def __init__(self, context, id, d, userInfo, instanceUserInfo, 
-        siteInfo, groupInfo):
-        
-        BasicAuditEvent.__init__(self, context, id, 
-          WITHDRAW_INVITATION, d, userInfo, instanceUserInfo, 
-          siteInfo, groupInfo, None, None, SUBSYSTEM)
-    
-    def __str__(self):
-        retval = u'Administrator %s (%s) withdrew the invitation '\
-          u'to join %s (%s) on %s (%s) from %s (%s)' % \
-          (self.userInfo.name, self.userInfo.id,
-          self.groupInfo.name, self.groupInfo.id,
-          self.siteInfo.name, self.siteInfo.id,
-          self.instanceUserInfo.name, self.instanceUserInfo.id,)
-        return retval.encode('ascii', 'ignore')
-
-    @property
-    def xhtml(self):
-        cssClass = u'audit-event profile-invite-event-%s' % self.code
-        retval = u'<span class="%s">Withdrew the invitation to '\
-            u'join %s from %s.</span>' %\
-            (cssClass, groupInfo_to_anchor(self.groupInfo),
-             userInfo_to_anchor(self.instanceUserInfo))
         if ((self.instanceUserInfo.id != self.userInfo.id)
             and not(self.userInfo.anonymous)):
             retval = u'%s &#8212; %s' %\
