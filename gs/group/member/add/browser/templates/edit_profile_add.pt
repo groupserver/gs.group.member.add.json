@@ -55,7 +55,7 @@
         <div id="delivery">
           <h2>Message Delivery</h2>
           <p>
-            The new member does not have to recieve email messages
+            The new member does not have to receive email messages
             from 
             <span class="group" 
               tal:content="python:view.groupInfo.name">this group</span>
