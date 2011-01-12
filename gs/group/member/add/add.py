@@ -14,7 +14,7 @@ from Products.GSGroup.groupInfo import groupInfo_to_anchor
 from Products.GSGroupMember.groupmembership import user_member_of_group
 from Products.GSProfile.edit_profile import select_widget, wym_editor_widget
 from Products.GSProfile.utils import create_user_from_email, \
-    enforce_schema, verificationId_from_email
+    enforce_schema
 from Products.GSProfile.emailaddress import NewEmailAddress, \
     EmailAddressExists
 from gs.content.form.radio import radio_widget
@@ -150,10 +150,13 @@ class AddEditProfileForm(PageForm):
         else:
             # Email address does not exist, but it is a legitimate address
             user = create_user_from_email(self.context, toAddr)
-            verificationId = verificationId_from_email(toAddr)
-            user.add_emailAddressVerification(verificationId, toAddr)
             # force verify
-            user.verify_emailAddress(verificationId)
+            vid = '%s-%s-verified' % (toAddr, self.adminInfo.id)
+            evu = createObject('groupserver.EmailVerificationUserFromEmail', 
+                               self.context, toAddr)
+            evu.add_verification_id(vid)
+            evu.verify_email(vid)
+            
             # get the user object in the context of the group and site
             userInfo = createObject('groupserver.UserFromId',
                                   self.groupInfo.groupObj,
