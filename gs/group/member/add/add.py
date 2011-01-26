@@ -18,7 +18,6 @@ from gs.group.member.invite.utils import set_digest
 from audit import Auditor, ADD_NEW_USER, ADD_OLD_USER, ADD_EXISTING_MEMBER
 from addfields import AddFields
 from gs.group.member.join.interfaces import IGSJoiningUser
-from gs.profile.email.base.emailuser import EmailUser
 
 class AddEditProfileForm(PageForm):
     label = u'Add a New Group Member, Without Verification'
@@ -44,12 +43,6 @@ class AddEditProfileForm(PageForm):
             self.__formFields['biography'].custom_widget = wym_editor_widget
             self.__formFields['delivery'].custom_widget = radio_widget
         return self.__formFields
-        
-    @property
-    def defaultFromEmail(self):
-        emailUser = EmailUser(self.context, self.adminInfo)
-        retval = emailUser.get_delivery_addresses()[0]
-        return retval
         
     def setUpWidgets(self, ignore_request=False):        
         data = {}
