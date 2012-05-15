@@ -14,7 +14,7 @@ from Products.GSProfile.utils import create_user_from_email, \
 from gs.profile.email.base.emailaddress import NewEmailAddress, \
     EmailAddressExists
 from gs.content.form.radio import radio_widget
-from gs.group.member.invite.utils import set_digest
+from gs.group.member.invite.base.utils import set_digest
 from audit import Auditor, ADD_NEW_USER, ADD_OLD_USER, ADD_EXISTING_MEMBER
 from addfields import AddFields
 from gs.group.member.join.interfaces import IGSJoiningUser

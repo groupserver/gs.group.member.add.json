@@ -4,7 +4,7 @@
 Introduction
 ============
 
-The ``gs.group.member.invite`` module is concerned with the *issuing*
+The ``gs.group.member.invite.base`` module is concerned with the *issuing*
 of invitations to join an online group. Invitations take the form of
 an email message with a link. The invitation is responded to using one
 of the two pages in the ``gs.profile.invite`` module.
