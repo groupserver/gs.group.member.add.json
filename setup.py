@@ -33,6 +33,7 @@ setup(name='gs.group.member.add',
     zip_safe=False,
     install_requires=[
         'setuptools',
+        'gs.database',
         'gs.profile.notify',
         'Products.GSProfile',
         # -*- Extra requirements: -*-

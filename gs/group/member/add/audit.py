@@ -176,8 +176,7 @@ class Auditor(object):
         self.adminInfo = adminInfo
         self.userInfo  = userInfo
         
-        da = userInfo.user.zsqlalchemy
-        self.queries = AuditQuery(da)
+        self.queries = AuditQuery()
       
         self.factory = AuditEventFactory()
         
