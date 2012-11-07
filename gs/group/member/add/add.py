@@ -44,8 +44,7 @@ class AddEditProfileForm(GroupForm):
     def handle_add(self, action, data):
         adder = Adder(self.context, self.groupInfo, self.adminInfo)
         toAddr = data['toAddr'].strip()
-        msg, userInfo, status = adder.add(self.groupInfo, toAddr,
-                                            data['delivery'], data)
+        msg, userInfo, status = adder.add(toAddr, data['delivery'], data)
         self.status = msg
 
         if status != ADD_EXISTING_MEMBER:

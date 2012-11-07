@@ -2,11 +2,12 @@
 from zope.app.apidoc.interface import getFieldsInOrder
 from Products.GSProfile import interfaces
 
+
 class AddFields(object):
     def __init__(self, context):
         self.context = context
         self.__adminInterface = self.__interface = None
-        self.__profileFieldIds = self.__profileFields =  None
+        self.__profileFieldIds = self.__profileFields = None
         self.__adminWidgets = self.__adminInterface = None
         self.__widgetNames = self.__config = None
         self.__profileInterfaceName = None
@@ -18,7 +19,7 @@ class AddFields(object):
             assert hasattr(site_root, 'GlobalConfiguration')
             self.__config = site_root.GlobalConfiguration
         return self.__config
-        
+
     @property
     def adminInterface(self):
         if self.__adminInterface == None:
@@ -28,7 +29,7 @@ class AddFields(object):
                 'Interface "%s" not found.' % adminInterfaceName
             self.__adminInterface = getattr(interfaces, adminInterfaceName)
         return self.__adminInterface
-    
+
     @property
     def profileInterfaceName(self):
         if self.__profileInterfaceName == None:
@@ -39,16 +40,16 @@ class AddFields(object):
                 'Interface "%s" not found.' % adminInterfaceName
             self.__profileInterfaceName = ifName
         return self.__profileInterfaceName
-    
+
     @property
     def profileInterface(self):
         if self.__interface == None:
-            self.__interface = getattr(interfaces, 
+            self.__interface = getattr(interfaces,
                                 self.profileInterfaceName)
         return self.__interface
-        
+
     def get_admin_widgets(self, widgets):
-        '''These widgets are specific to the Invite a New Member 
+        '''These widgets are specific to the Invite a New Member
             interface. They form the first part of the form.'''
         if self.__adminWidgets == None:
             assert widgets

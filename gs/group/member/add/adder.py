@@ -10,6 +10,7 @@ from gs.group.member.invite.base.utils import set_digest
 from gs.group.member.join.interfaces import IGSJoiningUser
 from gs.profile.email.base.emailaddress import NewEmailAddress, \
     EmailAddressExists
+from addfields import AddFields
 from audit import Auditor, ADD_NEW_USER, ADD_OLD_USER, ADD_EXISTING_MEMBER
 
 
@@ -92,16 +93,18 @@ class Adder(object):
         return retval
 
     def add_profile_attributes(self, userInfo, data):
-        enforce_schema(userInfo.user, self.addFields.profileInterface)
-        fields = self.form_fields.select(*self.addFields.profileFieldIds)
+        addFields = AddFields(self.context)
+        enforce_schema(userInfo.user, addFields.profileInterface)
+        f = form.Fields(addFields.adminInterface, render_context=False)
+        fields = f.select(*addFields.profileFieldIds)
         for field in fields:
-            field.interface = self.addFields.profileInterface
+            field.interface = addFields.profileInterface
 
         form.applyChanges(userInfo.user, fields, data)
         set_digest(userInfo, self.groupInfo, data)
 
     def get_auditor(self, userInfo):
-        auditor = Auditor(self.siteInfo, self.groupInfo,
+        auditor = Auditor(self.groupInfo.siteInfo, self.groupInfo,
                     self.adminInfo, userInfo)
 
         return auditor
