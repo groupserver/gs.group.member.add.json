@@ -5,10 +5,15 @@
   metal:use-macro="context/@@groupserver_full_layout/page">
   <head>
     <title metal:fill-slot="title">
-      <span tal:replace="string:${view/label}: ${view/groupInfo/get_name}: ${view/siteInfo/get_name}">
+      <tal:block replace="string:${view/label}: ${view/groupInfo/name}: ${view/siteInfo/name}">
         Edit Profile
-      </span>
+      </tal:block>
     </title>
+    <tal:block metal:fill-slot="metadata">
+      <link rel="up" href="#" 
+            tal:attributes="href view/groupInfo/relativeURL;
+                            title view/groupInfo/name"/>
+    </tal:block>
   </head>
   <body>
     <div metal:fill-slot="messages" tal:condition="view/status" 
@@ -125,4 +130,3 @@
     </tal:block>
   </body>
 </html>
-
