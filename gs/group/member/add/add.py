@@ -1,8 +1,8 @@
 # coding=utf-8
 '''The form that allows an admin to invite a new person to join a group.'''
+from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
 from zope.formlib import form
-from five.formlib.formbase import PageForm
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.CustomUserFolder.userinfo import userInfo_to_anchor
 from Products.GSGroup.groupInfo import groupInfo_to_anchor
@@ -17,32 +17,26 @@ from gs.group.member.invite.base.utils import set_digest
 from audit import Auditor, ADD_NEW_USER, ADD_OLD_USER, ADD_EXISTING_MEMBER
 from addfields import AddFields
 from gs.group.member.join.interfaces import IGSJoiningUser
+from gs.group.base import GroupForm
 
 
-class AddEditProfileForm(PageForm):
+class AddEditProfileForm(GroupForm):
     label = u'Add a New Group Member, Without Verification'
     pageTemplateFileName = 'browser/templates/edit_profile_add.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
-    def __init__(self, context, request):
-        PageForm.__init__(self, context, request)
+    def __init__(self, group, request):
+        super(AddEditProfileForm, self).__init__(group, request)
 
-        self.siteInfo = \
-          createObject('groupserver.SiteInfo', context)
-        self.__groupInfo = self.__formFields = self.__config = None
-        self.__adminInfo = None
-        self.addFields = AddFields(context)
-
-    @property
+    @Lazy
     def form_fields(self):
-        if self.__formFields is None:
-            self.__formFields = form.Fields(self.addFields.adminInterface,
-                render_context=False)
-            tz = self.__formFields['tz']
-            tz.custom_widget = select_widget
-            self.__formFields['biography'].custom_widget = wym_editor_widget
-            self.__formFields['delivery'].custom_widget = radio_widget
-        return self.__formFields
+        retval = form.Fields(self.addFields.adminInterface,
+                            render_context=False)
+        tz = retval['tz']
+        tz.custom_widget = select_widget
+        retval['biography'].custom_widget = wym_editor_widget
+        retval['delivery'].custom_widget = radio_widget
+        return retval
 
     def setUpWidgets(self, ignore_request=False):
         data = {}
@@ -67,36 +61,33 @@ class AddEditProfileForm(PageForm):
             self.status = u'<p>There are errors:</p>'
 
     # Non-Standard methods below this point
-    @property
-    def groupInfo(self):
-        if self.__groupInfo is None:
-            self.__groupInfo = \
-                createObject('groupserver.GroupInfo', self.context)
-        return self.__groupInfo
 
-    @property
+    @Lazy
+    def addFields(self):
+        retval = AddFields(self.context)
+        return retval
+
+    @Lazy
     def adminInfo(self):
-        if self.__adminInfo is None:
-            self.__adminInfo = createObject('groupserver.LoggedInUser',
-                self.context)
-        return self.__adminInfo
+        retval = self.loggedInUser
+        return retval
 
-    @property
+    @Lazy
     def adminWidgets(self):
         return self.addFields.get_admin_widgets(self.widgets)
 
-    @property
+    @Lazy
     def profileWidgets(self):
         return self.addFields.get_profile_widgets(self.widgets)
 
-    @property
+    @Lazy
     def requiredProfileWidgets(self):
         widgets = self.addFields.get_profile_widgets(self.widgets)
         widgets = [widget for widget in widgets if widget.required]
 
         return widgets
 
-    @property
+    @Lazy
     def optionalProfileWidgets(self):
         widgets = self.addFields.get_profile_widgets(self.widgets)
         widgets = [widget for widget in widgets if not(widget.required)]
