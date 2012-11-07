@@ -4,12 +4,24 @@
   xmlns:five="http://namespaces.zope.org/five"
   i18n_domain="groupserver">
 
+  <!-- The Add Member page -->
   <browser:page 
-    for="gs.group.base.interfaces.IGSGroupMarker"
     name="admin_add.html"
+    for="gs.group.base.interfaces.IGSGroupMarker"
     class=".add.AddEditProfileForm"
     permission="zope2.ManageUsers"/>
+  <!-- The link for the group page to the Add Member page-->
+  <browser:viewlet
+    name="gs-group-member-add-link"
+    for="gs.group.base.interfaces.IGSGroupMarker"
+    manager="gs.group.home.interfaces.IGroupHomepageAdminLinks"
+    template="browser/templates/add_link.pt"
+    class="gs.group.member.base.viewlet.GroupAdminViewlet"
+    permission="zope2.Public"
+    weight="2"
+    title="Join" />
 
+  <!-- The audit event -->
   <utility 
     factory=".audit.AuditEventFactory"
     name="gs.group.member.add"

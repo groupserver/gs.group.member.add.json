@@ -1,0 +1,4 @@
+<li>
+  <a href="admin_add.html"><strong>Add</strong> a member</a> to
+  <span class="group" tal:content="view/groupInfo/name">this group</span>
+</li>
