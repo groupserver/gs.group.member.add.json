@@ -5,11 +5,11 @@
   i18n_domain="groupserver">
 
   <browser:page 
-    for="Products.XWFChat.interfaces.IGSGroupFolder"
+    for="gs.group.base.interfaces.IGSGroupMarker"
     name="admin_add.html"
     class=".add.AddEditProfileForm"
     permission="zope2.ManageUsers"/>
-  
+
   <utility 
     factory=".audit.AuditEventFactory"
     name="gs.group.member.add"
