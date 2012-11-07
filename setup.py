@@ -46,6 +46,7 @@ setup(name='gs.group.member.add',
         'gs.group.member.base',  # For the GroupAdminViewlet
         'gs.group.member.invite',
         'gs.group.member.join',
+        'gs.help',
         'gs.profile.email.base',
         'Products.CustomUserFolder',
         'Products.GSAuditTrail',

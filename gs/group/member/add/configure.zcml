@@ -27,4 +27,11 @@
     name="gs.group.member.add"
     permission="zope.Public" />
 
+  <browser:viewlet 
+    name="gs-group-member-add"
+    manager="gs.help.interfaces.IAdminHelp"
+    template="browser/templates/help.pt"
+    permission="zope.Public"
+    weight="3" />
+
 </configure>
