@@ -26,11 +26,11 @@ class Adder(object):
         try:
             emailChecker.validate(toAddr)
         except EmailAddressExists:
-            status = self.add_existing_user(toAddr, delivery)
+            msg, userInfo, status = self.add_existing_user(toAddr, delivery)
         else:
-            status = self.add_new_user(toAddr, delivery, profileDict)
-        assert status
-        return status
+            msg, userInfo, status = self.add_new_user(toAddr, delivery,
+                                                        profileDict)
+        return (msg, userInfo, status)
 
     def add_existing_user(self, toAddr, delivery):
         acl_users = self.context.acl_users
@@ -41,21 +41,23 @@ class Adder(object):
                                   user.getId())
         auditor = self.get_auditor(userInfo)
         if user_member_of_group(user, self.groupInfo):
-            auditor.info(ADD_EXISTING_MEMBER, toAddr)
+            status = ADD_EXISTING_MEMBER
+            auditor.info(status, toAddr)
             m = u'<li>The person with the email address {email} &#8213; '\
                 u'{user} &#8213; is already a member of {group}. No changes '\
                 u'to the profile of {user} have been made.</li>'
         else:
-            m = u'<li>Adding the existing participant with  the email '\
-                u'address {email} &#8213; {user} &#8213; to {group}</li>'
-            auditor.info(ADD_OLD_USER, toAddr)
+            status = ADD_OLD_USER
+            auditor.info(status, toAddr)
             joininguser = IGSJoiningUser(userInfo)
             joininguser.silent_join(self.groupInfo)
             self.set_delivery(userInfo, delivery)
-        u = userInfo_to_anchor(userInfo)
-        e = u'<code class="email">%s</code>' % toAddr
-        g = groupInfo_to_anchor(self.groupInfo)
-        retval = m.format(email=e, user=u, group=g)
+            m = u'<li>Adding the existing participant with  the email '\
+                u'address {email} &#8213; {user} &#8213; to {group}</li>'
+        e = u'<code class="email">{}</code>'.format(toAddr)
+        msg = m.format(email=e, user=userInfo_to_anchor(userInfo),
+                        group=groupInfo_to_anchor(self.groupInfo))
+        retval = (msg, userInfo, status)
         return retval
 
     def add_new_user(self, toAddr, delivery, profileDict):
@@ -73,7 +75,8 @@ class Adder(object):
                                 user.id)
         self.add_profile_attributes(userInfo, profileDict)
         auditor = self.get_auditor(userInfo)
-        auditor.info(ADD_NEW_USER, toAddr)
+        status = ADD_NEW_USER
+        auditor.info(status, toAddr)
         joininguser = IGSJoiningUser(userInfo)
         joininguser.silent_join(self.groupInfo)
         self.set_delivery(userInfo, delivery)
@@ -82,9 +85,10 @@ class Adder(object):
             u'email address {email}. {user} has been joined to '\
             u'{group}.</li>\n'
         u = userInfo_to_anchor(userInfo)
-        e = u'<code class="email">%s</code>' % toAddr
+        e = u'<code class="email">{}</code>'.format(toAddr)
         g = groupInfo_to_anchor(self.groupInfo)
-        retval = m.format(user=u, email=e, group=g)
+        msg = m.format(user=u, email=e, group=g)
+        retval = (msg, userInfo, status)
         return retval
 
     def add_profile_attributes(self, userInfo, data):

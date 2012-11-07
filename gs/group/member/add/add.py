@@ -5,9 +5,11 @@ from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.GSProfile.edit_profile import select_widget, wym_editor_widget
 from gs.content.form.radio import radio_widget
-from addfields import AddFields
 from gs.group.base import GroupForm
+from gs.group.member.join.notify import NotifyNewMember, NotifyAdmin
+from addfields import AddFields
 from adder import Adder
+from audit import ADD_EXISTING_MEMBER
 
 
 class AddEditProfileForm(GroupForm):
@@ -44,8 +46,20 @@ class AddEditProfileForm(GroupForm):
     def handle_add(self, action, data):
         adder = Adder(self.context, self.groupInfo, self.adminInfo)
         toAddr = data['toAddr'].strip()
-        userInfo = adder.add(self.groupInfo, toAddr, data['delivery'], data)
-        self.status = '{}'.format(userInfo.name)
+        msg, userInfo, status = adder.add(self.groupInfo, toAddr,
+                                            data['delivery'], data)
+        self.status = msg
+
+        if status != ADD_EXISTING_MEMBER:
+            notifier = NotifyNewMember(self.context, self.request)
+            notifier.notify(userInfo)
+
+            adminNotifier = NotifyAdmin(self.context, self.request)
+            admins = [a for a in self.groupInfo.group_admins
+                        if a.id != self.adminInfo.id]
+            for adminInfo in admins:
+                adminNotifier.notify(adminInfo, userInfo)
+        assert self.status
 
     def handle_add_action_failure(self, action, data, errors):
         if len(errors) == 1:
