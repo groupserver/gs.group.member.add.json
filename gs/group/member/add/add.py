@@ -1,10 +1,9 @@
 # coding=utf-8
-'''The form that allows an admin to invite a new person to join a group.'''
 from zope.cachedescriptors.property import Lazy
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
-from Products.GSProfile.edit_profile import select_widget, wym_editor_widget
-from gs.content.form.radio import radio_widget
+from Products.GSProfile.edit_profile import wym_editor_widget
+from gs.content.form import select_widget, radio_widget
 from gs.group.base import GroupForm
 from gs.group.member.join.notify import NotifyNewMember, NotifyAdmin
 from addfields import AddFields
@@ -24,8 +23,7 @@ class AddEditProfileForm(GroupForm):
     def form_fields(self):
         retval = form.Fields(self.addFields.adminInterface,
                             render_context=False)
-        tz = retval['tz']
-        tz.custom_widget = select_widget
+        retval['tz'].custom_widget = select_widget
         retval['biography'].custom_widget = wym_editor_widget
         retval['delivery'].custom_widget = radio_widget
         return retval
@@ -67,8 +65,6 @@ class AddEditProfileForm(GroupForm):
         else:
             self.status = u'<p>There are errors:</p>'
 
-    # Non-Standard methods below this point
-
     @Lazy
     def addFields(self):
         retval = AddFields(self.context)
@@ -91,12 +87,10 @@ class AddEditProfileForm(GroupForm):
     def requiredProfileWidgets(self):
         widgets = self.addFields.get_profile_widgets(self.widgets)
         widgets = [widget for widget in widgets if widget.required]
-
         return widgets
 
     @Lazy
     def optionalProfileWidgets(self):
         widgets = self.addFields.get_profile_widgets(self.widgets)
         widgets = [widget for widget in widgets if not(widget.required)]
-
         return widgets

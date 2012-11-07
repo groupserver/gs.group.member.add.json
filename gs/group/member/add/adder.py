@@ -3,14 +3,14 @@ from zope.component import createObject
 from zope.formlib import form
 from Products.CustomUserFolder.userinfo import userInfo_to_anchor
 from Products.GSGroup.groupInfo import groupInfo_to_anchor
-from Products.GSGroupMember.groupmembership import user_member_of_group
 from Products.GSProfile.utils import create_user_from_email, \
     enforce_schema
+from gs.group.member.base.utils import user_member_of_group
+from gs.group.member.invite.base.utils import set_digest
+from gs.group.member.join.interfaces import IGSJoiningUser
 from gs.profile.email.base.emailaddress import NewEmailAddress, \
     EmailAddressExists
-from gs.group.member.invite.base.utils import set_digest
 from audit import Auditor, ADD_NEW_USER, ADD_OLD_USER, ADD_EXISTING_MEMBER
-from gs.group.member.join.interfaces import IGSJoiningUser
 
 
 class Adder(object):
