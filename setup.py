@@ -7,7 +7,7 @@ version = get_version()
 
 setup(name='gs.group.member.add',
     version=version,
-    description="The pages that are required to add people to "\
+    description="The pages that are required to add people to "
       "GroupServer groups, without an invitation",
     long_description=open("README.txt").read() + "\n" +
                     open(os.path.join("docs", "HISTORY.txt")).read(),
@@ -33,13 +33,26 @@ setup(name='gs.group.member.add',
     zip_safe=False,
     install_requires=[
         'setuptools',
-        'gs.database',
-        'gs.profile.notify',
+        'pytz',
+        'Zope2',
+        'zope.app.apidoc',
+        'zope.cachedescriptors',
+        'zope.component',
+        'zope.formlib',
+        'zope.interface',
+        'gs.content.form',
+        'gs.content.layout',
+        'gs.group.base',
+        'gs.group.member.base',  # For the GroupAdminViewlet
+        'gs.group.member.invite',
+        'gs.group.member.join',
+        'gs.profile.email.base',
+        'Products.CustomUserFolder',
+        'Products.GSAuditTrail',
+        'Products.GSGroup',
+        'Products.GSGroupMember',
         'Products.GSProfile',
-        # -*- Extra requirements: -*-
     ],
     entry_points="""
     # -*- Entry points: -*-
-    """,
-)
-
+    """,)
