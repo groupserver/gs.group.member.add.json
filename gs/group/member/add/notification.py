@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from textwrap import TextWrapper
 from urllib import quote
 from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
@@ -53,3 +54,14 @@ class WelcomeTXTNotification(WelcomeHTMLNotification):
 
     def __init__(self, group, request):
         super(WelcomeTXTNotification, self).__init__(group, request)
+        self.tw = TextWrapper()\
+
+        response = request.response
+        response.setHeader("Content-Type", 'text/plain; charset=UTF-8')
+        filename = 'welcome-to-%s.txt' % self.groupInfo.name
+        response.setHeader('Content-Disposition',
+                            'inline; filename="%s"' % filename)
+
+    def format_message(self, m):
+        retval = self.tw.fill(m)
+        return retval

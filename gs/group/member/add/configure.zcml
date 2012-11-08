@@ -32,7 +32,7 @@
     name="gs-group-member-add-welcome.txt"
     for="gs.group.base.interfaces.IGSGroupMarker"
     class=".notification.WelcomeTXTNotification"
-    template="browser/templates/welcome.pt"
+    template="browser/templates/welcome-text.pt"
     permission="zope2.View"/>
 
   <!-- The audit event -->
