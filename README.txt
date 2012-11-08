@@ -1,92 +1,79 @@
-.. sectnum::
+This product provides the "just add" system for GroupServer_. Normally
+people become participants by actively accepting an invitation [#invite]_,
+signing up [#register]_, or joining a group [#join]_.
 
-============
-Introduction
-============
+Generally these methods are better at getting people into a group than the
+`Add Form`_. People who are added have no password, so they cannot use any
+of the features on the Web. They are added are dependent on the
+administrator for all help. In addition all the help pages, all the email
+footers, and most of the notifications are written assuming that the member
+can log in.
 
-The ``gs.group.member.invite.base`` module is concerned with the *issuing*
-of invitations to join an online group. Invitations take the form of
-an email message with a link. The invitation is responded to using one
-of the two pages in the ``gs.profile.invite`` module.
+Add Form
+========
 
-Why Invitations?
-================
+The *Add* form is very similar to the *Invite a New Member* form. It
+inherits much of the functionality from the Invite system. Like the Invite
+system, it requires two email addresses: a ``From`` address and a ``To``
+address. The latter is used as the email address of the new member. All the
+required profile fields have to be filled out, also. There are three
+possible outcomes from submitting the Add form.
 
-Why does GroupServer insist in sending invitations rather than allowing
-an administrator to *just add* members? Good question.
+New Profile:
+  If the email address is unrecognised then a new profile is created, the
+  member is added to the group, and he or she receives the `Welcome
+  notification`_.
 
-For new members the invitation does two things in addition to joining
-a person to a group. First, it **verifies** that the email address
-works. GroupServer will only be send messages to verified
-addresses. Second, the Respond page allows the member to set a password,
-so he or she is able to log in.
-
-Even for people that already have profiles, the invitations also allow
-*informed consent*. This is not just a good idea, in many countries it
-is the law.
-
-Pages
-=====
-
-There are three pages used for issuing invitations:
-
-* `Invite Site Member`_
-* `Invite New Member`_ and
-* `Send Invitations in Bulk`_
-
-All the pages for issuing an invitation are located in the group, and
-are attached to the group maker-interface.
-
-Invite Site Member
-------------------
-
-The page for inviting a site member to join a group is the simplest. It
-uses a vocabulary to list all the site members who are not members of
-the group. The administrator selects the site members to be invited,
-and issues an invitation to them.
-
-Invite New Member
------------------
-
-The most commonly used invitation page is used to invite a single person
-to join a group. This page allows the administrator to do the following.
-
-#. Create a complete profile for the new member, including an email
-   address.
-
-#. Customises the message that is sent in the invitation.
-
-If the email address matches a person who already has a profile, then
-the person is just sent an invitation; the profile is left as it was.
-
-Send Invitations in Bulk
-------------------------
-
-Send Invitations in Bulk is complex enough to make my back teeth ache. It
-reads a CSV, parsing it using `the standard Python ``csv.DictReader``
-class <http://docs.python.org/library/csv.html#csv.DictReader>`_. Each
-row is assumed to be a new member, with the different profile fields
-in each column. There must be an email-address column, and each person
-must have an email address. This address is used to check if the person
-already has a profile.
-
-* If the person already has a profile *and* is a member of the group,
-  then the member is skipped.
+Existing Profile:
+  If the email address already belongs to an existing profile, and that
+  participant is not a member of the group, then he or she is joined to the
+  group and sent the *standard* Welcome notification from
+  ``gs.group.member.join`` [#join]_. The (somewhat vein) hope is that the
+  participant would have set a password and is able to log in by the time
+  the new member is added to a second group.
   
-* If the person already has a profile but is **not** a member of the
-  group then the person is issued with an invitation.
+Existing Member:
+  If the email address already belongs to an existing group member then no
+  action is taken.
 
-* If the person has no profile, then one is created, the fields are set,
-  and the person is issued with an invitation.
+The *Email delivery settings* selector is not present on the Add form. This
+is because the new member cannot login [#login]_, so he or she generally
+cannot view the posts on the web, which is necessary for *Web only* and the
+*Topic digest* options to work [#digest]_.
 
-Having churned through all the rows, the page then collates the results
-into four groups:
+Welcome Notification
+--------------------
 
-#. People who were skipped,
-#. People who had existing profiles and were invited,
-#. People who had a profile created and were invited,
-#. Rows that had errors.
+The *Welcome* notification sent from this product contains no links to the
+group or the profile of the member. This is because *generally* the member
+cannot view anything without logging in [#login]_, and the member is unable
+to log in without a password.
 
-Sending invitations in bulk is nasty because of all the edge cases,
-and all the parsing, and all the collation.
+The notification does
 
+* Welcome the new member,
+* State that the new member will get email,
+* Tell the new member how to post,
+* Contain a *Reset password* link, and
+* Contain an ``Unsubscribe`` ``mailto``.
+
+Resources
+=========
+
+- Code repository: https://source.iopen.net/groupserver/gs.group.member.add
+- Questions and comments to http://groupserver.org/groups/development
+- Report bugs at https://redmine.iopen.net/projects/groupserver
+
+.. [#invite] See <https://source.iopen.net/groupserver/gs.group.member.invite>
+.. [#register] See <https://source.iopen.net/groupserver/gs.group.member.signup>
+.. [#join] See <https://source.iopen.net/groupserver/gs.group.member.join>
+.. [#login] In the experience of `OnlineGroups.Net`_ almost all groups are
+            secret, with the majority of the remainder being private. The
+            public groups are enough of an exception that we do not have to
+            worry about them.
+.. [#digest] In the corner-case of someone being added to a public group
+             and needing *Web only* or *Digest* then the administrator can
+             change the email settings of the new member after adding them.
+
+.. _GroupServer: http://groupserver.org/
+.. _OnlineGroups.Net: https://onlinegroups.net/
