@@ -21,12 +21,27 @@
     weight="2"
     title="Join" />
 
+  <!-- The notifications -->
+  <browser:page 
+    name="gs-group-member-add-welcome.html"
+    for="gs.group.base.interfaces.IGSGroupMarker"
+    class=".notification.WelcomeHTMLNotification"
+    template="browser/templates/welcome.pt"
+    permission="zope2.View"/>
+  <browser:page 
+    name="gs-group-member-add-welcome.txt"
+    for="gs.group.base.interfaces.IGSGroupMarker"
+    class=".notification.WelcomeTXTNotification"
+    template="browser/templates/welcome.pt"
+    permission="zope2.View"/>
+
   <!-- The audit event -->
   <utility 
     factory=".audit.AuditEventFactory"
     name="gs.group.member.add"
     permission="zope.Public" />
 
+  <!-- The Admin Help -->
   <browser:viewlet 
     name="gs-group-member-add"
     manager="gs.help.interfaces.IAdminHelp"
