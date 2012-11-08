@@ -24,44 +24,41 @@
         tal:attributes="action request/URL" id="edit-profile">
         <h1 tal:content="view/label">Edit Profile</h1>
         <p>
-          To add a new member to the group without requiring the user to verify,
-          enter the user's details below and click the 
+          To add a new member to the group enter the user's details below
+          and click the 
           <samp class="button"
             tal:define="action python:[a for a in view.actions][0].label"
             tal:content="action">Big R</samp>
           button.              
-          A new member will be created, and the member will be sent an
-          email letting them know they have been joined to
+          A new member will be created, and the member will be sent a
+          notification letting him or her know they have been joined to
           <span class="group" 
             tal:content="python:view.groupInfo.name">this group</span>.
+          You must fill out all required fields below, which are marked 
+          <span class="required"><label style="display:inline;margin:0px;">like
+            this</label></span>.
         </p>
         <p>
-          <b>Please note:</b> This should only be used when you have absolute certainty that the person
-          wishes to be a member of the group, and you are certain of their details. If
-          you are not, please use the <a href="admin_join.html">Invite a New Group Member</a>
+          <strong class="label">Note:</strong> This form should only be used
+          when you have absolute certainty that the person wishes to be a
+          member of the group, and you are certain of their details. 
+          If you are not, please use the 
+          <a href="admin_join.html">Invite a New Group Member</a> 
           form instead.
         </p>
-        <p>
-          You must fill out all required fields, which are marked 
-            <span class="required"><label style="display:inline;margin:0px;">like
-              this</label></span>.
-        </p>
-        <div id="delivery">
-          <h2>Message Delivery</h2>
+        <div id="delivery" class="section">
+          <h2>Notification</h2>
           <p>
-            The new member does not have to receive email messages
-            from 
-            <span class="group" 
-              tal:content="python:view.groupInfo.name">this group</span>
-            right away: you can set the delivery settings to a daily
-            digest of topics or Web-only.
+            The new member will receive a notification from you that he or
+            she is a group member.
+            Select the email address you wish to use for the notification.
           </p>
           <tal:block define="widgets view/adminWidgets">
             <tal:block
               replace="structure provider:groupserver.FormWidgets"/>
           </tal:block>
         </div>
-        <div id="standardProfileFields">
+        <div id="standardProfileFields" class="section">
           <h2>Standard Profile Information</h2>
           <p>The following fields are the standard profile fields on
             <span class="site" 
@@ -78,11 +75,11 @@
             <a class="disclosureButton" href="javascript:showHideDisclosure('advancedProfileFields')">You may optionally enter other parts of the new member's profile</a>
           </p>
           <div class="disclosureShowHide" style="display: none;">
-            
-          <tal:block define="widgets view/optionalProfileWidgets">
-            <tal:block
-              replace="structure provider:groupserver.FormWidgets"/>
-          </tal:block>
+            <tal:block define="widgets view/optionalProfileWidgets">
+              <tal:block
+                replace="structure provider:groupserver.FormWidgets"/>
+            </tal:block>
+          </div><!--disclosureShowHide-->
         </div><!--advancedProfileFields-->
         <div class="buttons" tal:condition="view/availableActions">
           <tal:block repeat="action view/actions">
@@ -108,7 +105,7 @@
         jQuery.noConflict()
         jQuery(document).ready( function () {
             GSPopupFormHelp.init('#edit-profile');
-            jQuery('#form\\.toAddr').focus();
+            jQuery('#form\\.fn').focus();
         });
       </script>
       <script type="text/javascript" 
