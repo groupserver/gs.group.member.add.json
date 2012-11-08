@@ -105,7 +105,7 @@
         jQuery.noConflict()
         jQuery(document).ready( function () {
             GSPopupFormHelp.init('#edit-profile');
-            jQuery('#form\\.fn').focus();
+            jQuery('#form\\.toAddr').focus();
         });
       </script>
       <script type="text/javascript" 

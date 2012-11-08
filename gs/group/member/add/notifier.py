@@ -31,9 +31,10 @@ class Notifier(object):
                                     name=self.textTemplateName)
         return retval
 
-    def notify(self, adminInfo, userInfo, fromAddr, toAddr):
+    def notify(self, adminInfo, userInfo, fromAddr, toAddr, passwordLink):
         sender = MessageSender(self.context, userInfo)
         subject = (u'Welcome to {}'.format(self.groupInfo.name)).encode(UTF8)
-        html = self.htmlTemplate(adminInfo=adminInfo, userInfo=userInfo)
+        html = self.htmlTemplate(adminInfo=adminInfo, userInfo=userInfo,
+                                    passwordLink=passwordLink)
         text = self.textTemplate(adminInfo=adminInfo, userInfo=userInfo)
-        sender.send_message(subject, text, html, fromAddr, toAddr)
+        sender.send_message(subject, text, html, fromAddr, [toAddr])
