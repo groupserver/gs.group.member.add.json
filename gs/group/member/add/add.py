@@ -1,18 +1,21 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 from zope.cachedescriptors.property import Lazy
 from zope.formlib import form
 from Products.Five.browser.pagetemplatefile import ZopeTwoPageTemplateFile
 from Products.GSProfile.edit_profile import wym_editor_widget
 from gs.content.form import select_widget, radio_widget
 from gs.group.base import GroupForm
-from gs.group.member.join.notify import NotifyNewMember, NotifyAdmin
+from gs.group.member.join.notify import NotifyNewMember as NotifyJoin,\
+    NotifyAdmin
+from gs.profile.email.base.emailuser import EmailUser
 from addfields import AddFields
 from adder import Adder
-from audit import ADD_EXISTING_MEMBER
+from audit import ADD_NEW_USER, ADD_OLD_USER
+from notifier import Notifier as NotifyAdd
 
 
 class AddEditProfileForm(GroupForm):
-    label = u'Add a New Group Member, Without Verification'
+    label = u'Add a New Group Member'
     pageTemplateFileName = 'browser/templates/edit_profile_add.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
@@ -28,8 +31,14 @@ class AddEditProfileForm(GroupForm):
         retval['delivery'].custom_widget = radio_widget
         return retval
 
+    @Lazy
+    def defaultFromEmail(self):
+        emailUser = EmailUser(self.context, self.adminInfo)
+        retval = emailUser.get_delivery_addresses()[0]
+        return retval
+
     def setUpWidgets(self, ignore_request=False):
-        data = {}
+        data = {'fromAddr': self.defaultFromEmail}
 
         siteTz = self.siteInfo.get_property('tz', 'UTC')
         defaultTz = self.groupInfo.get_property('tz', siteTz)
@@ -47,10 +56,18 @@ class AddEditProfileForm(GroupForm):
         msg, userInfo, status = adder.add(toAddr, data['delivery'], data)
         self.status = msg
 
-        if status != ADD_EXISTING_MEMBER:
-            notifier = NotifyNewMember(self.context, self.request)
+        # Tell the user
+        if status == ADD_NEW_USER:
+            notifier = NotifyAdd(self.context, self.request)
+            fromAddr = ''
+            toAddr = ''
+            notifier.notify(self.adminInfo, userInfo, fromAddr, toAddr)
+        elif status == ADD_OLD_USER:
+            notifier = NotifyJoin(self.context, self.request)
             notifier.notify(userInfo)
 
+        # Tell the administrator
+        if status in (ADD_NEW_USER, ADD_OLD_USER):
             adminNotifier = NotifyAdmin(self.context, self.request)
             admins = [a for a in self.groupInfo.group_admins
                         if a.id != self.adminInfo.id]
