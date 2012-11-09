@@ -4,7 +4,10 @@
                   userInfo options/userInfo | view/loggedInUserInfo;
                   adminInfo options/adminInfo | view/loggedInUserInfo;">
   <head>
-    <title tal:content="view/siteInfo/name">Site</title>
+    <title><tal:block content="adminInfo/name">The Administrator</tal:block>
+    added you to
+    <tal:bock content="view/groupInfo/name">This Group</tal:bock>:
+    <tal:block content="view/siteInfo/name">Site</tal:block></title>
   </head>
   <body style="font:13px Trebuchet,'Trebuchet MS',arial,helvetica,clean,sans-serif;line-height:1.385;color:black;background:white;">
     <h1 style="width:100%;border-bottom:thick solid black;margin-bottom:0.692em;"><a href="#"
@@ -30,8 +33,8 @@
     <ul style="margin: 1.385em 0 1.385em 0;">
       <!--   - You will get email whenever someone posts to the group -->
       <li>
-        You can read the posts from the other members of the group.
-        You will receive an email whenever a member makes a post.
+        You will receive an email whenever a member makes a post to the
+        group.
         The email messages are easy to spot: the <em>subject</em> will 
         start with 
         <code tal:content="view/subj">the list title</code>.
@@ -64,35 +67,29 @@
       <span tal:content="view/groupInfo/name">This Group</span> on the Web.
     </p>
     <table style="margin: 1.385em 0 1.385em 0;font:13px Trebuchet,'Trebuchet MS',arial,helvetica,clean,sans-serif;line-height:1.385;">
-      <thead>
-        <tr>
-          <th style="text-align:left;width: 45%">
-            Profiles
-          </th>
-          <th style="text-align:left;width: 45%">
-            Archive
-          </th>
-        </tr>
-      </thead>
       <tbody>
         <tr>
-          <td>
+          <td style="width:45%;">
             <p>
-              View the profiles of the members of 
+              View the <strong>profiles</strong> of the members of 
               <span tal:content="view/groupInfo/name">This Group</span>, 
               including:
             </p>
             <ul>
               <li tal:content="adminInfo/name">The Administrator</li>
+              <tal:block repeat="name python:view.member_names(userInfo, adminInfo)">
+                <li tal:content="name">Name</li>
+              </tal:block>
               <li>
                 The profile that
                 <span tal:content="adminInfo/name">The Administrator</span> 
-                created for you.</li>
+                created for you</li>
             </ul>
           </td>
-          <td>
+          <td style="width:45%;">
             <p>
-              View the archive of posts, including these recent topics:
+              View the <strong>archive</strong> of posts, including these
+              recent topics:
             </p>
             <ul>
               <tal:block repeat="topic view/topics">

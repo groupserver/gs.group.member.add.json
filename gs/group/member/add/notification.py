@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+from random import sample
 from textwrap import TextWrapper
 from urllib import quote
 from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
+from Products.GSGroupMember.groupmembership import GroupMembers
 from gs.group.base import GroupPage
 from gs.group.messages.topics.queries import TopicsQuery
 UTF8 = 'utf-8'
@@ -58,9 +60,18 @@ class WelcomeHTMLNotification(GroupPage):
         retval = [topic['subject'] for topic in topics]
         return retval
 
-    @Lazy
-    def memberNames(self):
-        pass
+    def member_names(self, user, admin):
+        members = GroupMembers(self.context)
+        retval = []
+        if len(members) > 2:
+            ids = members.member_ids
+            try:
+                ids.remove(user.id)
+                ids.remove(admin.id)
+            except ValueError:
+                pass
+            retval = [members.getTermByToken(m).title for m in sample(ids, 3)]
+        return retval
 
 
 class WelcomeTXTNotification(WelcomeHTMLNotification):
