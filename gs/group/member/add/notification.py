@@ -4,6 +4,7 @@ from urllib import quote
 from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
 from gs.group.base import GroupPage
+from gs.group.messages.topics.queries import TopicsQuery
 UTF8 = 'utf-8'
 
 
@@ -48,6 +49,18 @@ class WelcomeHTMLNotification(GroupPage):
         retval = m.format(to=self.email, subj=quote(subj),
                             body=quote(body.encode(UTF8)))
         return retval
+
+    @Lazy
+    def topics(self):
+        query = TopicsQuery()
+        topics = query.recent_non_sitcky_topics(self.siteInfo.id,
+                                                self.groupInfo.id, 5, 0)
+        retval = [topic['subject'] for topic in topics]
+        return retval
+
+    @Lazy
+    def memberNames(self):
+        pass
 
 
 class WelcomeTXTNotification(WelcomeHTMLNotification):
