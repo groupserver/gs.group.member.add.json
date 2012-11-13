@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-from random import sample
 from textwrap import TextWrapper
 from urllib import quote
 from zope.cachedescriptors.property import Lazy
 from zope.component import createObject
 from Products.GSGroupMember.groupmembership import GroupMembers
 from gs.group.base import GroupPage
+from gs.group.member.list.queries import MembersQuery
 from gs.group.messages.topics.queries import TopicsQuery
 UTF8 = 'utf-8'
 
@@ -61,16 +61,23 @@ class WelcomeHTMLNotification(GroupPage):
         return retval
 
     def member_names(self, user, admin):
+        '''Get the names of the top-3 posting members, who are not the newly
+        added user or the administrator.'''
+        q = MembersQuery()
+        memberIds = q.posting_authors(self.siteInfo.id, self.groupInfo.id, 6)
+        try:
+            memberIds.remove(admin.id)
+        except ValueError:
+            pass
+        try:
+            memberIds.remove(user.id)
+        except ValueError:
+            pass
+
         members = GroupMembers(self.context)
-        retval = []
-        if len(members) > 2:
-            ids = members.member_ids
-            try:
-                ids.remove(user.id)
-                ids.remove(admin.id)
-            except ValueError:
-                pass
-            retval = [members.getTermByToken(m).title for m in sample(ids, 3)]
+        names = [members.getTermByToken(m).title for m in memberIds
+                    if (m and (m in members))]
+        retval = names[:3]
         return retval
 
 
