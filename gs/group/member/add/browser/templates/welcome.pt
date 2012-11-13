@@ -27,7 +27,7 @@
       <span tal:content="adminInfo/name">The Administrator</span> has
       added you to
       <span tal:content="view/groupInfo/name">This Group</span>:
-      an online group that you can use with email or the Web.
+      an online group that you can use with email or the web.
       You can participate in this group straight away.
     </p>
     <ul style="margin: 1.385em 0 1.385em 0;">
@@ -46,8 +46,8 @@
            href="#"><code tal:content="view/email"/></a>.
         <!-- Privacy disclosure -->
         When you make a post, or reply to a post, all the other members of
-        the group will receive your post, and it will be added to the
-        online archive.
+        the group will receive your post, and it will be added to the group
+        on the web.
       </li>
       <!--   - You can leave -->
       <li>
@@ -64,15 +64,14 @@
       <a tal:attributes="href passwordLink"
          href="#">Set a password</a>
       to gain access to the rich features of 
-      <span tal:content="view/groupInfo/name">This Group</span> on the Web.
+      <span tal:content="view/groupInfo/name">This Group</span> on the web.
     </p>
     <table style="margin: 1.385em 0 1.385em 0;font:13px Trebuchet,'Trebuchet MS',arial,helvetica,clean,sans-serif;line-height:1.385;">
       <tbody>
         <tr>
           <td style="width:45%;">
             <p>
-              View the <strong>profiles</strong> of the members of 
-              <span tal:content="view/groupInfo/name">This Group</span>, 
+              View the <strong>profiles</strong> of the members, 
               including:
             </p>
             <ul>
@@ -88,8 +87,7 @@
           </td>
           <td style="width:45%;">
             <p>
-              View the <strong>archive</strong> of posts, including these
-              recent topics:
+              View recent <strong>topics</strong>, like these:
             </p>
             <ul>
               <tal:block repeat="topic view/topics">
