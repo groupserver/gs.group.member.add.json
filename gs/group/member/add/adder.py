@@ -52,7 +52,7 @@ class Adder(object):
             joininguser.silent_join(self.groupInfo)
             m = u'<li>Adding the existing participant with  the email '\
                 u'address {email} &#8213; {user} &#8213; to {group}</li>'
-        e = u'<code class="email">{}</code>'.format(toAddr)
+        e = u'<code class="email">{0}</code>'.format(toAddr)
         msg = m.format(email=e, user=userInfo_to_anchor(userInfo),
                         group=groupInfo_to_anchor(self.groupInfo))
         retval = (msg, userInfo, status)
@@ -82,7 +82,7 @@ class Adder(object):
             u'email address {email}. {user} has been joined to '\
             u'{group}.</li>\n'
         u = userInfo_to_anchor(userInfo)
-        e = u'<code class="email">{}</code>'.format(toAddr)
+        e = u'<code class="email">{0}</code>'.format(toAddr)
         g = groupInfo_to_anchor(self.groupInfo)
         msg = m.format(user=u, email=e, group=g)
         retval = (msg, userInfo, status)
