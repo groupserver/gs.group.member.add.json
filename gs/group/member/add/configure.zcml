@@ -14,12 +14,12 @@
   <browser:viewlet
     name="gs-group-member-add-link"
     for="gs.group.base.interfaces.IGSGroupMarker"
-    manager="gs.group.home.interfaces.IGroupHomepageAdminLinks"
+    manager="gs.group.member.base.interfaces.IGroupMemberAdminLinks"
     template="browser/templates/add_link.pt"
     class="gs.group.member.base.viewlet.GroupAdminViewlet"
-    permission="zope2.Public"
-    weight="2"
-    title="Join" />
+    permission="zope2.ManageUsers"
+    weight="20"
+    title="Add Member" />
 
   <!-- The notifications -->
   <browser:page 
