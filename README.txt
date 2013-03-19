@@ -1,3 +1,21 @@
+=======================
+``gs.group.member.add``
+=======================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Add a member to a GroupServer Group
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Author: `Michael JasonSmith`_
+:Contact: Michael JasonSmith <mpj17@onlinegroups.net>
+:Date: 2013-03-19
+:Organization: `GroupServer.org`_
+:Copyright: This document is licensed under a
+  `Creative Commons Attribution-Share Alike 3.0 New Zealand License`_
+  by `OnlineGroups.Net`_.
+
+Introduction
+============
+
 This product provides the "just add" system for GroupServer_. Normally
 people become participants by actively accepting an invitation [#invite]_,
 signing up [#register]_, or joining a group [#join]_.
@@ -64,6 +82,12 @@ Resources
 - Questions and comments to http://groupserver.org/groups/development
 - Report bugs at https://redmine.iopen.net/projects/groupserver
 
+.. _GroupServer: http://groupserver.org/
+.. _GroupServer.org: http://groupserver.org/
+.. _OnlineGroups.Net: https://onlinegroups.net
+.. _Michael JasonSmith: http://groupserver.org/p/mpj17
+.. _Creative Commons Attribution-Share Alike 3.0 New Zealand License:
+   http://creativecommons.org/licenses/by-sa/3.0/nz/
 .. [#invite] See <https://source.iopen.net/groupserver/gs.group.member.invite>
 .. [#register] See <https://source.iopen.net/groupserver/gs.group.member.signup>
 .. [#join] See <https://source.iopen.net/groupserver/gs.group.member.join>
@@ -74,6 +98,3 @@ Resources
 .. [#digest] In the corner-case of someone being added to a public group
              and needing *Web only* or *Digest* then the administrator can
              change the email settings of the new member after adding them.
-
-.. _GroupServer: http://groupserver.org/
-.. _OnlineGroups.Net: https://onlinegroups.net/
