@@ -103,28 +103,8 @@
         </tal:block>
       </div><!--buttons-->
     </form>
-  <tal:block metal:fill-slot="javascript">
-    <script type="text/javascript"
-            src="/++resource++check_required-20071214.js">&#160;</script>
-    <script type="text/javascript"
-            tal:define="widgets view/widgets; 
-                        button string:#form\\.actions\\.add"
-            tal:content="provider:groupserver.RequiredWidgetsJavaScript">
-      alert("I have not been replaced.");
+    <script type="text/javascript" metal:fill-slot="javascript">
+      document.getElementById('form.toAddr').focus()
     </script>
-    <script type="text/javascript"
-            src="/++resource++popup_help-20071218.js">&#160;</script>
-    <script type="text/javascript">
-      jQuery.noConflict()
-      jQuery(document).ready( function () {
-      GSPopupFormHelp.init('#edit-profile');
-      jQuery('#form\\.toAddr').focus();
-      });
-    </script>
-    <script type="text/javascript" 
-            src="/++resource++wymeditor-20090831/jquery.wymeditor.js">&#160;</script>
-    <script type="text/javascript"
-            src="/++resource++gswym.js">&#160;</script>
-  </tal:block>
-</body>
+  </body>
 </html>
