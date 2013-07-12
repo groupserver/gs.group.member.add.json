@@ -19,7 +19,7 @@ from notifier import Notifier as NotifyAdd
 
 
 class AddEditProfileForm(GroupForm):
-    label = u'Add a New Group Member'
+    label = u'Add a new group member'
     pageTemplateFileName = 'browser/templates/edit_profile_add.pt'
     template = ZopeTwoPageTemplateFile(pageTemplateFileName)
 
@@ -57,7 +57,7 @@ class AddEditProfileForm(GroupForm):
         adder = Adder(self.context, self.groupInfo, self.adminInfo)
         toAddr = data['toAddr'].strip()
         msg, userInfo, status = adder.add(toAddr, data)
-        self.status = msg
+        self.status = '<ul>\n{0}\n</ul>'.format(msg)
 
         # Tell the user
         if status == ADD_NEW_USER:
