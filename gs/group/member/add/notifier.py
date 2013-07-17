@@ -12,6 +12,7 @@ class Notifier(object):
     def __init__(self, context, request):
         self.context = context
         self.request = request
+        self.oldContentType = self.request.response.getHeader('Content-Type')
 
     @Lazy
     def groupInfo(self):
@@ -34,7 +35,9 @@ class Notifier(object):
     def notify(self, adminInfo, userInfo, fromAddr, toAddr, passwordLink):
         sender = MessageSender(self.context, userInfo)
         subject = (u'Welcome to {}'.format(self.groupInfo.name)).encode(UTF8)
+        text = self.textTemplate(adminInfo=adminInfo, userInfo=userInfo)
         html = self.htmlTemplate(adminInfo=adminInfo, userInfo=userInfo,
                                     passwordLink=passwordLink)
-        text = self.textTemplate(adminInfo=adminInfo, userInfo=userInfo)
         sender.send_message(subject, text, html, fromAddr, [toAddr])
+
+        self.request.response.setHeader('Content-Type', self.oldContentType)

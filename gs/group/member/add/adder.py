@@ -77,9 +77,8 @@ class Adder(object):
         auditor.info(status, toAddr)
         joininguser = IGSJoiningUser(userInfo)
         joininguser.silent_join(self.groupInfo)
-        u = userInfo_to_anchor(userInfo)
         m = u'<li>A profile for {user} has been created, and given the '\
-            u'email address {email}. {user} has been joined to '\
+            u'email address {email}.</li>\n<li>{user} has been joined to '\
             u'{group}.</li>\n'
         u = userInfo_to_anchor(userInfo)
         e = u'<code class="email">{0}</code>'.format(toAddr)
