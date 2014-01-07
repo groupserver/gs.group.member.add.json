@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <configure xmlns="http://namespaces.zope.org/zope"
-  xmlns:browser="http://namespaces.zope.org/browser"
-  xmlns:five="http://namespaces.zope.org/five"
-  i18n_domain="groupserver">
+           xmlns:browser="http://namespaces.zope.org/browser"
+           i18n_domain="groupserver">
 
   <!-- The Add Member page -->
-  <browser:page 
+  <browser:page
     name="admin_add.html"
     for="gs.group.base.interfaces.IGSGroupMarker"
     class=".add.AddEditProfileForm"
@@ -22,13 +21,13 @@
     title="Add Member" />
 
   <!-- The notifications -->
-  <browser:page 
+  <browser:page
     name="gs-group-member-add-welcome.html"
     for="gs.group.base.interfaces.IGSGroupMarker"
     class=".notification.WelcomeHTMLNotification"
     template="browser/templates/welcome.pt"
     permission="zope2.View"/>
-  <browser:page 
+  <browser:page
     name="gs-group-member-add-welcome.txt"
     for="gs.group.base.interfaces.IGSGroupMarker"
     class=".notification.WelcomeTXTNotification"
@@ -36,13 +35,13 @@
     permission="zope2.View"/>
 
   <!-- The audit event -->
-  <utility 
+  <utility
     factory=".audit.AuditEventFactory"
     name="gs.group.member.add"
     permission="zope.Public" />
 
   <!-- The Admin Help -->
-  <browser:viewlet 
+  <browser:viewlet
     name="gs-group-member-add"
     manager="gs.help.interfaces.IAdminHelp"
     template="browser/templates/help.pt"
