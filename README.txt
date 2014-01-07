@@ -1,6 +1,6 @@
-=======================
-``gs.group.member.add``
-=======================
+============================
+``gs.group.member.add.base``
+============================
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Add a member to a GroupServer Group
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -78,7 +78,7 @@ The notification does
 Resources
 =========
 
-- Code repository: https://source.iopen.net/groupserver/gs.group.member.add
+- Code repository: https://source.iopen.net/groupserver/gs.group.member.add.base
 - Questions and comments to http://groupserver.org/groups/development
 - Report bugs at https://redmine.iopen.net/projects/groupserver
 

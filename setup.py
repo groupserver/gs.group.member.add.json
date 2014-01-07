@@ -5,10 +5,9 @@ from version import get_version
 
 version = get_version()
 
-setup(name='gs.group.member.add',
+setup(name='gs.group.member.add.base',
     version=version,
-    description="The pages that are required to add people to "
-      "GroupServer groups, without an invitation",
+    description="Add people to a GroupServer group, without an invitation",
     long_description=open("README.txt").read() + "\n" +
                     open(os.path.join("docs", "HISTORY.txt")).read(),
     classifiers=[
@@ -28,7 +27,8 @@ setup(name='gs.group.member.add',
     url='http://groupserver.org',
     license='ZPL 2.1',
     packages=find_packages(exclude=['ez_setup']),
-    namespace_packages=['gs', 'gs.group', 'gs.group.member'],
+    namespace_packages=['gs', 'gs.group', 'gs.group.member', 
+                        'gs.group.member.add'],
     include_package_data=True,
     zip_safe=False,
     install_requires=[
