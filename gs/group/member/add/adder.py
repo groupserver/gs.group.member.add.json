@@ -1,27 +1,40 @@
 # -*- coding: utf-8 -*-
+##############################################################################
+#
+# Copyright © 2013 OnlineGroups.net and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+from __future__ import absolute_import, unicode_literals
 from zope.component import createObject
 from zope.formlib import form
-from Products.CustomUserFolder.userinfo import userInfo_to_anchor
-from Products.GSGroup.groupInfo import groupInfo_to_anchor
-from Products.GSProfile.utils import create_user_from_email, \
-    enforce_schema
 from gs.group.member.base.utils import user_member_of_group
 from gs.group.member.join.interfaces import IGSJoiningUser
 from gs.profile.email.base.emailaddress import NewEmailAddress, \
     EmailAddressExists
-from addfields import AddFields
-from audit import Auditor, ADD_NEW_USER, ADD_OLD_USER, ADD_EXISTING_MEMBER
+from Products.CustomUserFolder.userinfo import userInfo_to_anchor
+from Products.GSGroup.groupInfo import groupInfo_to_anchor
+from Products.GSProfile.utils import create_user_from_email, \
+    enforce_schema
+from .addfields import AddFields
+from .audit import Auditor, ADD_NEW_USER, ADD_OLD_USER, ADD_EXISTING_MEMBER
 
 
 class Adder(object):
-
     def __init__(self, context, groupInfo, adminInfo):
         self.context = context
         self.groupInfo = groupInfo
         self.adminInfo = adminInfo
 
     def add(self, toAddr, profileDict):
-        emailChecker = NewEmailAddress(title=u'Email')
+        emailChecker = NewEmailAddress(title='Email')
         emailChecker.context = self.context
         try:
             emailChecker.validate(toAddr)
@@ -34,7 +47,9 @@ class Adder(object):
     def add_existing_user(self, toAddr):
         acl_users = self.context.acl_users
         user = acl_users.get_userByEmail(toAddr)
-        assert user, 'User for address <%s> not found' % toAddr
+        if not user:
+            m = 'User for address <{0}> not found'.format(toAddr)
+            raise LookupError(m)
         # get the user object in the context of the group and site
         userInfo = createObject('groupserver.UserFromId', self.context,
                                   user.getId())
@@ -42,17 +57,17 @@ class Adder(object):
         if user_member_of_group(user, self.groupInfo):
             status = ADD_EXISTING_MEMBER
             auditor.info(status, toAddr)
-            m = u'<li>The person with the email address {email} &#8213; '\
-                u'{user} &#8213; is already a member of {group}. No changes '\
-                u'to the profile of {user} have been made.</li>'
+            m = '<li>The person with the email address {email} &#8213; '\
+                '{user} &#8213; is already a member of {group}. No changes '\
+                'to the profile of {user} have been made.</li>'
         else:
             status = ADD_OLD_USER
             auditor.info(status, toAddr)
             joininguser = IGSJoiningUser(userInfo)
             joininguser.silent_join(self.groupInfo)
-            m = u'<li>Adding the existing participant with  the email '\
-                u'address {email} &#8213; {user} &#8213; to {group}</li>'
-        e = u'<code class="email">{0}</code>'.format(toAddr)
+            m = '<li>Adding the existing participant with  the email '\
+                'address {email} &#8213; {user} &#8213; to {group}</li>'
+        e = '<code class="email">{0}</code>'.format(toAddr)
         msg = m.format(email=e, user=userInfo_to_anchor(userInfo),
                         group=groupInfo_to_anchor(self.groupInfo))
         retval = (msg, userInfo, status)
@@ -77,11 +92,11 @@ class Adder(object):
         auditor.info(status, toAddr)
         joininguser = IGSJoiningUser(userInfo)
         joininguser.silent_join(self.groupInfo)
-        m = u'<li>A profile for {user} has been created, and given the '\
-            u'email address {email}.</li>\n<li>{user} has been joined to '\
-            u'{group}.</li>\n'
+        m = '<li>A profile for {user} has been created, and given the '\
+            'email address {email}.</li>\n<li>{user} has been joined to '\
+            '{group}.</li>\n'
         u = userInfo_to_anchor(userInfo)
-        e = u'<code class="email">{0}</code>'.format(toAddr)
+        e = '<code class="email">{0}</code>'.format(toAddr)
         g = groupInfo_to_anchor(self.groupInfo)
         msg = m.format(user=u, email=e, group=g)
         retval = (msg, userInfo, status)
