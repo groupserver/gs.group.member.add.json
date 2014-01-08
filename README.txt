@@ -38,7 +38,6 @@ indicate the request is to be processed [#formlib]_. This request must also
 pass a cookie with the parameter __ac and a value that corresponds to an
 authenticated session.
 
-
 ``fromAddr``
 ------------
 
@@ -55,7 +54,7 @@ example will attempt to add a user to the Example Group::
 
     curl -H "Accept: application/json" -b "__ac=<VALUE_FROM_BROWSER>" 
     -X POST -d "toAddr=example_user%40example.com&fn=Example%20User&delivery=email&message=Hi&fromAddr=<YOUR_EMAIL_ADDRESS>&subject=Welcome&submit" 
-    http://gsbox/groups/example_group/gs-group-member-invite-json.html
+    http://gsbox/groups/example_group/gs-group-member-add.json
 
 In Firefox, if you are logged into your GroupServer instance, you can find
 the value for ``__ac`` at <chrome://browser/content/preferences/cookies.xul>.
