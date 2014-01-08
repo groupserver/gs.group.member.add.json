@@ -13,13 +13,15 @@
 #
 ##############################################################################
 from __future__ import unicode_literals
-import json
+from json import dumps as to_json
 from email.utils import parseaddr
 from zope.cachedescriptors.property import Lazy
 from zope.formlib import form as formlib
 from gs.content.form.api.json import GroupEndpoint
-from gs.group.member.add.base import Adder, AddFields, ADD_NEW_USER, \
-    ADD_OLD_USER, ADD_EXISTING_MEMBER
+from gs.group.member.add.base import Adder, AddFields, NotifyAdd,\
+    ADD_NEW_USER, ADD_OLD_USER, ADD_EXISTING_MEMBER
+from gs.group.member.join.notify import NotifyNewMember as NotifyJoin,\
+    NotifyAdmin
 
 
 class AddUserAPI(GroupEndpoint):
@@ -47,9 +49,25 @@ class AddUserAPI(GroupEndpoint):
         # on columns and what not. So here we just have to pass data on to the
         # actual invite code and package the result up as json
         adder = Adder(self.context, self.groupInfo, self.loggedInUser)
-        addrName, toAddr = parseaddr(data['toAddr'].strip())
+        addrToName, toAddr = parseaddr(data['toAddr'].strip())
         toAddr = data['toAddr'].strip()
         msg, userInfo, status = adder.add(toAddr, data)
+
+        # Tell the user
+        if status == ADD_NEW_USER:
+            notifier = NotifyAdd(self.context, self.request)
+            addrFromName, fromAddr = parseaddr(data['fromAddr'].strip())
+            passwd = self.get_password_reset(userInfo, toAddr)
+            notifier.notify(self.adminInfo, userInfo, fromAddr, toAddr, passwd)
+        elif status == ADD_OLD_USER:
+            notifier = NotifyJoin(self.context, self.request)
+            notifier.notify(userInfo)
+
+        # Tell the administrator
+        if status in (ADD_NEW_USER, ADD_OLD_USER):
+            adminNotifier = NotifyAdmin(self.context, self.request)
+            for adminInfo in self.groupInfo.group_admins:
+                adminNotifier.notify(adminInfo, userInfo)
 
         retval = {}
         if status in (ADD_NEW_USER, ADD_OLD_USER, ADD_EXISTING_MEMBER):
@@ -59,7 +77,7 @@ class AddUserAPI(GroupEndpoint):
             retval['status'] = 100
             retval['message'] = 'An unknown event occurred.'
 
-        retval = json.dumps(retval, indent=4)
+        retval = to_json(retval, indent=4)
         return retval
 
     def invite_user_failure(self, action, data, errors):
