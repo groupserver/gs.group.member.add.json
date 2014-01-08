@@ -15,7 +15,7 @@
            i18n_domain="groupserver">
 
   <browser:page
-    name="gs-group-member-add-json.html"
+    name="gs-group-member-add.json"
     for="gs.group.base.interfaces.IGSGroupMarker"
     class=".api.AddUserAPI"
     permission="zope2.ManageUsers"/>
