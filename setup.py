@@ -18,9 +18,10 @@ from version import get_version
 
 version = get_version()
 
-setup(name='gs.group.member.add.base',
+setup(name='gs.group.member.add.json',
     version=version,
-    description="Add people to a GroupServer group, without an invitation",
+      description="Add people to a GroupServer group using JSON, without an "
+          "invitation",
     long_description=open("README.txt").read() + "\n" +
                     open(os.path.join("docs", "HISTORY.txt")).read(),
     classifiers=[
@@ -49,27 +50,7 @@ setup(name='gs.group.member.add.base',
         'pytz',
         'Zope2',
         'zope.cachedescriptors',
-        'zope.component',
-        'zope.formlib',
-        'zope.interface',
-        'gs.content.form',
-        'gs.content.layout',
-        'gs.group.base',
-        'gs.group.member.base',
-        'gs.group.member.invite',
-        'gs.group.member.join',
-        'gs.group.member.list',
-        'gs.group.member.viewlet',
-        'gs.group.messages.topics',  # The notification has a list of topics
-        'gs.help',
-        'gs.profile.email.base',
-        'gs.profile.notify',
-        'gs.profile.password',
-        'Products.CustomUserFolder',
-        'Products.GSAuditTrail',
-        'Products.GSGroup',
-        'Products.GSProfile',
-        'Products.XWFCore',
+        'gs.group.member.add.base',
     ],
     entry_points="""
     # -*- Entry points: -*-
