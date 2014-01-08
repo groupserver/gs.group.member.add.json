@@ -53,6 +53,9 @@ setup(name='gs.group.member.add.json',
         'zope.formlib',
         'gs.content.form.api.json',
         'gs.group.member.add.base',
+        'gs.group.member.join',
+        'gs.profile.password',
+        'Products.XWFCore.XWFUtils',
     ],
     entry_points="""
     # -*- Entry points: -*-
