@@ -50,6 +50,8 @@ setup(name='gs.group.member.add.json',
         'pytz',
         'Zope2',
         'zope.cachedescriptors',
+        'zope.formlib',
+        'gs.content.form.api.json',
         'gs.group.member.add.base',
     ],
     entry_points="""
