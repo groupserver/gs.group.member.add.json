@@ -1,4 +1,0 @@
-<li id="gs-group-member-add-admin-link">
-  <a tal:attributes="href string:${view/groupInfo/relative_url}/admin_add.html"
-     href="admin_add.html"><strong>Add</strong> a member</a>
-</li>
