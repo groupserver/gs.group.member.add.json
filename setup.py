@@ -55,7 +55,7 @@ setup(name='gs.group.member.add.json',
         'gs.group.member.add.base',
         'gs.group.member.join',
         'gs.profile.password',
-        'Products.XWFCore.XWFUtils',
+        'Products.XWFCore',
     ],
     entry_points="""
     # -*- Entry points: -*-
