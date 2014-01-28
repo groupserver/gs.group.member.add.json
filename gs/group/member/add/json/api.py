@@ -54,6 +54,9 @@ class AddUserAPI(GroupEndpoint):
         # Zope's regular form validation system *should* take care of checking
         # on columns and what not. So here we just have to pass data on to the
         # actual invite code and package the result up as json
+        return self.actual_add(data)
+
+    def actual_add(self, data):
         retval = {}
 
         adder = Adder(self.context, self.groupInfo, self.loggedInUser)
