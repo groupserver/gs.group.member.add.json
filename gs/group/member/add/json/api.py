@@ -16,7 +16,6 @@ from __future__ import unicode_literals
 from json import dumps as to_json
 import md5
 import time
-from email.utils import parseaddr
 from zope.cachedescriptors.property import Lazy
 from zope.formlib import form as formlib
 from gs.content.form.api.json import GroupEndpoint
@@ -24,6 +23,7 @@ from gs.group.member.add.base import Adder, AddFields, NotifyAdd,\
     ADD_NEW_USER, ADD_OLD_USER, ADD_EXISTING_MEMBER
 from gs.group.member.join.notify import NotifyNewMember as NotifyJoin,\
     NotifyAdmin
+from gs.profile.email.base import sanitise_address
 from gs.profile.password.interfaces import IGSPasswordUser
 from Products.GSGroup.groupInfo import groupInfo_to_anchor
 from Products.CustomUserFolder.userinfo import userInfo_to_anchor
@@ -60,8 +60,7 @@ class AddUserAPI(GroupEndpoint):
         retval = {}
 
         adder = Adder(self.context, self.groupInfo, self.loggedInUser)
-        addrToName, toAddr = parseaddr(data['toAddr'].strip())
-        toAddr = data['toAddr'].strip()
+        toAddr = sanitise_address(data['toAddr'])
         linked_groupname = groupInfo_to_anchor(self.groupInfo)
 
         msg, userInfo, status = adder.add(toAddr, data)
@@ -70,7 +69,7 @@ class AddUserAPI(GroupEndpoint):
         # Tell the user
         if status == ADD_NEW_USER:
             notifier = NotifyAdd(self.context, self.request)
-            addrFromName, fromAddr = parseaddr(data['fromAddr'].strip())
+            fromAddr = sanitise_address(data['fromAddr'])
             passwd = self.get_password_reset(userInfo, toAddr)
             notifier.notify(self.loggedInUser, userInfo, fromAddr, toAddr,
                             passwd)
