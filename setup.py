@@ -22,8 +22,8 @@ setup(name='gs.group.member.add.json',
     version=version,
       description="Add people to a GroupServer group using JSON, without an "
           "invitation",
-    long_description=open("README.txt").read() + "\n" +
-                    open(os.path.join("docs", "HISTORY.txt")).read(),
+    long_description=open("README.rst").read() + "\n" +
+                    open(os.path.join("docs", "HISTORY.rst")).read(),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         "Environment :: Web Environment",
