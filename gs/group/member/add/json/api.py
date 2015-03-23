@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-##############################################################################
+############################################################################
 #
-# Copyright © 2014 OnlineGroups.net, E-Democracy.org, and Contributors.
+# Copyright © 2014, 2015 OnlineGroups.net, E-Democracy.org, and
+# Contributors.
+#
 # All Rights Reserved.
 #
 # This software is subject to the provisions of the Zope Public License,
@@ -11,17 +13,18 @@
 # WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
 # FOR A PARTICULAR PURPOSE.
 #
-##############################################################################
-from __future__ import unicode_literals
+############################################################################
+from __future__ import absolute_import, unicode_literals
 from json import dumps as to_json
 import md5
 import time
 from zope.cachedescriptors.property import Lazy
 from zope.formlib import form as formlib
 from gs.content.form.api.json import GroupEndpoint
-from gs.group.member.add.base import Adder, AddFields, NotifyAdd,\
-    ADD_NEW_USER, ADD_OLD_USER, ADD_EXISTING_MEMBER
-from gs.group.member.join.notify import NotifyNewMember as NotifyJoin,\
+from gs.group.member.add.base import (
+    Adder, AddFields, NotifyAdd, ADD_NEW_USER, ADD_OLD_USER,
+    ADD_EXISTING_MEMBER)
+from gs.group.member.join.notify import NotifyNewMember as NotifyJoin, \
     NotifyAdmin
 from gs.profile.email.base import sanitise_address
 from gs.profile.password.interfaces import IGSPasswordUser
@@ -51,9 +54,10 @@ class AddUserAPI(GroupEndpoint):
 
     @formlib.action(label='Submit', prefix='', failure='add_user_failure')
     def add_user_success(self, action, data):
-        # Zope's regular form validation system *should* take care of checking
-        # on columns and what not. So here we just have to pass data on to the
-        # actual invite code and package the result up as json
+        # Zope's regular form validation system *should* take care of
+        # checking on columns and what not. So here we just have to pass
+        # data on to the actual invite code and package the result up as
+        # json
         return self.actual_add(data)
 
     def actual_add(self, data):
@@ -79,7 +83,8 @@ class AddUserAPI(GroupEndpoint):
             m.append('A profile for {0} has been created, and given the '
                      'email address <code>{1}</code>.')
             m.append('{0} has been added to {2}.')
-            m = [i.format(linked_username, toAddr, linked_groupname) for i in m]
+            m = [i.format(linked_username, toAddr, linked_groupname)
+                 for i in m]
             retval['message'] = m
 
         elif status == ADD_OLD_USER:
@@ -89,16 +94,18 @@ class AddUserAPI(GroupEndpoint):
             retval['status'] = 2
             m = []
             m.append('Added the existing person with the email address '
-                     '<code>{0}</code> ― {1} ― to {2}.')
-            m = [i.format(toAddr, linked_username, linked_groupname) for i in m]
+                     '<code>{0}</code> ? {1} ? to {2}.')
+            m = [i.format(toAddr, linked_username, linked_groupname)
+                 for i in m]
             retval['message'] = m
         elif status == ADD_EXISTING_MEMBER:
             retval['status'] = 3
             m = []
-            m.append('The person with the email address <code>{0}</code> ― '
-                     '{1} ― is already a member of {2}.')
+            m.append('The person with the email address <code>{0}</code> ? '
+                     '{1} ? is already a member of {2}.')
             m.append('No changes to the profile of {1} have been made.')
-            m = [i.format(toAddr, linked_username, linked_groupname) for i in m]
+            m = [i.format(toAddr, linked_username, linked_groupname)
+                 for i in m]
             retval['message'] = m
         else:
             retval['status'] = 100
