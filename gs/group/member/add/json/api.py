@@ -94,15 +94,15 @@ class AddUserAPI(GroupEndpoint):
             retval['status'] = 2
             m = []
             m.append('Added the existing person with the email address '
-                     '<code>{0}</code> ? {1} ? to {2}.')
+                     '<code>{0}</code> ({1}) to {2}.')
             m = [i.format(toAddr, linked_username, linked_groupname)
                  for i in m]
             retval['message'] = m
         elif status == ADD_EXISTING_MEMBER:
             retval['status'] = 3
             m = []
-            m.append('The person with the email address <code>{0}</code> ? '
-                     '{1} ? is already a member of {2}.')
+            m.append('The person with the email address <code>{0}</code> '
+                     '({1}) is already a member of {2}.')
             m.append('No changes to the profile of {1} have been made.')
             m = [i.format(toAddr, linked_username, linked_groupname)
                  for i in m]
