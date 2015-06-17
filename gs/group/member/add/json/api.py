@@ -16,11 +16,11 @@
 ############################################################################
 from __future__ import absolute_import, unicode_literals
 from json import dumps as to_json
-import md5
-import time
+from time import asctime
 from zope.cachedescriptors.property import Lazy
 from zope.formlib import form as formlib
 from gs.content.form.api.json import GroupEndpoint
+from gs.core import to_id
 from gs.group.member.add.base import (
     Adder, AddFields, NotifyAdd, ADD_NEW_USER, ADD_OLD_USER,
     ADD_EXISTING_MEMBER)
@@ -30,7 +30,6 @@ from gs.profile.email.base import sanitise_address
 from gs.profile.password.interfaces import IGSPasswordUser
 from Products.GSGroup.groupInfo import groupInfo_to_anchor
 from Products.CustomUserFolder.userinfo import userInfo_to_anchor
-from Products.XWFCore.XWFUtils import convert_int2b62
 
 
 class AddUserAPI(GroupEndpoint):
@@ -126,9 +125,8 @@ class AddUserAPI(GroupEndpoint):
     def get_password_reset(self, userInfo, email):
         # FIXME: cut 'n' paste software engineering from
         # gs.group.member.add.base
-        s = time.asctime() + email + userInfo.name + self.siteInfo.name
-        vNum = long(md5.new(s).hexdigest(), 16)
-        resetId = str(convert_int2b62(vNum))
+        s = asctime() + email + userInfo.name + self.siteInfo.name
+        resetId = to_id(s)
 
         passwordUser = IGSPasswordUser(userInfo)
         passwordUser.add_password_reset(resetId)
