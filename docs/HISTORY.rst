@@ -1,14 +1,28 @@
 Changelog
 =========
 
-1.0 - Unreleased
------------------
+2.0.0 (2015-06-17)
+------------------
 
-* Split gs.profile.signup off from Products.GSProfile.
-* Reordered the pages involved in sign up:
-  1. Sign Up
-  2. Set Password
-  3. Change Profile
-  4. Verify Email
-* The Set Password page now takes in the password /en clear/.
+* Adding a web hook
+
+1.1.0 (2014-01-28)
+------------------
+
+* Sanitising the addresses before returning them
+* Updating the product metadata
+
+1.0.0 (2014-01-10)
+------------------
+
+Initial version, forked off `gs.group.member.add.base`_ and using
+the same API as `gs.group.member.invite.json`_. Prior to the
+creation of this product people could only be added to groups
+using HTML forms.
+
+.. _gs.group.member.invite.json:
+   https://github.com/groupserver/gs.group.member.invite.json
+
+.. _gs.group.member.add.base:
+   https://github.com/groupserver/gs.group.member.add.base
 
