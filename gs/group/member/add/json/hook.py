@@ -17,10 +17,12 @@ from json import dumps as to_json
 from logging import getLogger
 log = getLogger('gs.group.member.add.json.hook')
 #from zope.cachedescriptors.property import Lazy
+from time import asctime
 from zope.component import createObject
 from zope.formlib import form
 from gs.auth.token import log_auth_error
 from gs.content.form.api.json import SiteEndpoint
+from gs.core import to_id
 from gs.group.member.add.base import (
     Adder, NotifyAdd, ADD_NEW_USER, ADD_OLD_USER,
     ADD_EXISTING_MEMBER)
@@ -28,6 +30,7 @@ from gs.group.member.join.notify import NotifyNewMember as NotifyJoin, \
     NotifyAdmin
 from gs.profile.email.base import sanitise_address
 from gs.profile.json import user_info, groups, email_info
+from gs.profile.password.interfaces import IGSPasswordUser
 from .interfaces import IHookUser
 
 
@@ -55,7 +58,7 @@ class AddHook(SiteEndpoint):
              'message': 'Not processed'}
 
         if status == ADD_NEW_USER:
-            notifier = NotifyAdd(self.context, self.request)
+            notifier = NotifyAdd(groupInfo.groupObj, self.request)
             fromAddr = sanitise_address(self.siteInfo.get_support_email())
             passwd = self.get_password_reset(userInfo, toAddr)
             notifier.notify(self.loggedInUser, userInfo, fromAddr, toAddr,
@@ -95,4 +98,18 @@ class AddHook(SiteEndpoint):
     def handle_add_failure(self, action, data, errors):
         log_auth_error(self.context, self.request, errors)
         retval = self.build_error_response(action, data, errors)
+        return retval
+
+    def get_password_reset(self, userInfo, email):
+        # FIXME: cut 'n' paste software engineering from
+        # gs.group.member.add.base
+        s = asctime() + email + userInfo.name + self.siteInfo.name
+        resetId = to_id(s)
+
+        passwordUser = IGSPasswordUser(userInfo)
+        passwordUser.add_password_reset(resetId)
+
+        u = '{siteUrl}/r/password/{resetId}'
+        retval = u.format(siteUrl=self.siteInfo.url, resetId=resetId)
+        assert retval
         return retval
