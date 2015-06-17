@@ -20,4 +20,10 @@
     class=".api.AddUserAPI"
     permission="zope2.ManageUsers"/>
 
+  <browser:page
+    name="gs-group-member-add.json"
+    for="Products.GSContent.IGSSiteFolder"
+    class=".hook.AddHook"
+    permission="zope2.Public"/>
+
 </configure>
