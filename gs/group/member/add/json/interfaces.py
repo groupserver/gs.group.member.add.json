@@ -47,6 +47,6 @@ class IHookUser(Interface):
         required=False)
 
     tz = ASCIILine(
-        timezone='Timezone',
+        title='Timezone',
         description='The timezone',
         required=False)

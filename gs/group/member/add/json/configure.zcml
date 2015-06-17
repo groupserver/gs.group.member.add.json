@@ -22,7 +22,7 @@
 
   <browser:page
     name="gs-group-member-add.json"
-    for="Products.GSContent.IGSSiteFolder"
+    for="Products.GSContent.interfaces.IGSSiteFolder"
     class=".hook.AddHook"
     permission="zope2.Public"/>
 
