@@ -66,6 +66,7 @@ setup(
         'gs.profile.password',
         'Products.XWFCore',
     ],
+    extras_require={'docs': ['Sphinx'], },
     entry_points="""
     # -*- Entry points: -*-
     """,)
