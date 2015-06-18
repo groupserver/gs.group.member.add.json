@@ -5,6 +5,9 @@ Changelog
 ------------------
 
 * Adding a web hook
+* Adding Sphinx_ documentation
+
+.. _Sphinx: http://sphinx-doc.org/
 
 1.1.0 (2014-01-28)
 ------------------
