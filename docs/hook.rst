@@ -12,7 +12,7 @@ Description
 ===========
 
 The web hook ``gs-group-member-add.json``, in the **site** context,
-adds a person to a group on the site. 
+adds a person to a group on the site.
 
 * If the person is new to the system then a profile is created
   and the person is added to the group.
@@ -33,7 +33,12 @@ Required arguments
 
 .. option:: email=<address>
 
-  The email address of the new member.
+  The email address of the new *group* member. The email address
+  is used as the identifier for the person (see Returns_):
+
+  * If the email has never been seen by the system then a new
+    profile is created,
+  * Otherwise an existing profile is added to the group.
 
 .. option:: fn=<name>
 
@@ -41,7 +46,8 @@ Required arguments
 
 .. option:: add
 
-  The action (no value needs to be set, it must be present)
+  The action (no value needs to be set, but the argument must be
+  present).
 
 Optional arguments
 ==================
@@ -64,8 +70,9 @@ Optional arguments
 Returns
 =======
 
-On completion a JSON object is returned. The ``status`` and
-``message`` fields are always set.
+On completion a JSON object is returned. In the returned object
+the :js:attr:`status` and :js:attr:`message` fields are always
+set, with the :js:attr:`user` field usually set.
 
 .. js:class:: Returns()
 
