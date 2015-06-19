@@ -12,7 +12,7 @@
 <!-- FITNESS FOR A PARTICULAR PURPOSE. -->
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:browser="http://namespaces.zope.org/browser"
-           i18n_domain="groupserver">
+           i18n_domain="gs.group.member.add.json">
 
   <browser:page
     name="gs-group-member-add.json"
