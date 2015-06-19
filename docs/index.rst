@@ -10,7 +10,7 @@
   by `OnlineGroups.net`_.
 
 ..  _Creative Commons Attribution-Share Alike 4.0 International License:
-    http://creativecommons.org/licenses/by-sa/4.0/
+    https://creativecommons.org/licenses/by-sa/4.0/
 
 This product provides an API to allow people to be added to a
 GroupServer_ group, without an invitation being sent
