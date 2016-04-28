@@ -111,7 +111,7 @@ Add a person with the name ``A Person`` and the email
      --post-data='token=Fake&groupId=test&email=a.person@home.example.com@fn=A%20Person&add'
 
 .. _the core web-hook documentation:
-   http://groupserver.readthedocs.org/en/latest/webhook.html#profile-data
+   http://groupserver.readthedocs.io/en/latest/webhook.html#profile-data
 
 .. [#token] See ``gs.auth.token`` for more information
    <https://github.com/groupserver/gs.auth.token>
